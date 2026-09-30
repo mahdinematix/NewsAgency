@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/00-Framework/" />
+  <Folder Name="/src/01-Domain/">
+    <Project Path="src/01-Domain/NewsAgency.Domain/NewsAgency.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/02-Application/">
+    <Project Path="src/02-Application/NewsAgency.Application.Contracts/NewsAgency.Application.Contracts.csproj" />
+    <Project Path="src/02-Application/NewsAgency.Application/NewsAgency.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/03-Infrastructure/">
+    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Commands/NewsAgency.Infra.Data.EFCore.Commands.csproj" />
+    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Queries/NewsAgency.Infra.Data.EFCore.Queries.csproj" />
+  </Folder>
+  <Folder Name="/src/04-EndPoints/">
+    <Project Path="src/04-EndPoints/NewsAgency.EndPoints.WebApi/NewsAgency.EndPoints.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/00-Framework/" />
+  <Folder Name="/tests/01-Domain/">
+    <Project Path="tests/01-Domain/NewsAgency.Domain.Tests.Unit/NewsAgency.Domain.Tests.Unit.csproj" />
+  </Folder>
+  <Folder Name="/tests/02-Application/" />
+  <Folder Name="/tests/03-Infrastructure/" />
+  <Folder Name="/tests/04-EndPoints/" />
+</Solution>

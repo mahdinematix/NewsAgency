@@ -1,0 +1,6 @@
+@NewsAgency.EndPoints.WebApi_HostAddress = http://localhost:5174
+
+GET {{NewsAgency.EndPoints.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
