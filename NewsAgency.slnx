@@ -1,6 +1,5 @@
 <Solution>
   <Folder Name="/src/" />
-  <Folder Name="/src/00-Framework/" />
   <Folder Name="/src/01-Domain/">
     <Project Path="src/01-Domain/NewsAgency.Domain/NewsAgency.Domain.csproj" />
   </Folder>
@@ -16,7 +15,6 @@
     <Project Path="src/04-EndPoints/NewsAgency.EndPoints.WebApi/NewsAgency.EndPoints.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/" />
-  <Folder Name="/tests/00-Framework/" />
   <Folder Name="/tests/01-Domain/">
     <Project Path="tests/01-Domain/NewsAgency.Domain.Tests.Unit/NewsAgency.Domain.Tests.Unit.csproj" />
   </Folder>
