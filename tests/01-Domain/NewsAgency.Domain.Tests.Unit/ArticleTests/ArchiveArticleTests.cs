@@ -1,22 +1,23 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.ArticleAgg.Entities;
-using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Domain.Tests.Unit.Builders;
 
 namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
 public class ArchiveArticleTests
 {
+    private readonly ArticleTestBuilder _builder;
+
+    public ArchiveArticleTests()
+    {
+        _builder = new ArticleTestBuilder();
+    }
     [Fact]
     public void Should_Archive_When_Status_Is_Published()
     {
         //arrange
-        long id = 1;
-        var title = new ArticleTitle("a".PadLeft(5, '-'));
-        var content = new ArticleContent("a".PadLeft(10, '-'));
-        long authorId = 1;
-        long categoryId = 1;
-        var article = new Article(id, title, content, authorId, categoryId);
+        var article = _builder.Build();
         article.Publish();
 
         //act
@@ -30,12 +31,7 @@ public class ArchiveArticleTests
     public void Should_Not_Change_Status_When_Status_Is_Archived_Already()
     {
         //arrange
-        long id = 1;
-        var title = new ArticleTitle("a".PadLeft(5, '-'));
-        var content = new ArticleContent("a".PadLeft(10, '-'));
-        long authorId = 1;
-        long categoryId = 1;
-        var article = new Article(id, title, content, authorId, categoryId);
+        var article = _builder.Build();
         article.Publish();
         article.Archive();
 
@@ -50,12 +46,7 @@ public class ArchiveArticleTests
     public void Should_Throw_Exception_When_Trying_Archive_When_Status_Is_Rejected()
     {
         //arrange
-        long id = 1;
-        var title = new ArticleTitle("a".PadLeft(5, '-'));
-        var content = new ArticleContent("a".PadLeft(10, '-'));
-        long authorId = 1;
-        long categoryId = 1;
-        var article = new Article(id, title, content, authorId, categoryId);
+        var article = _builder.Build();
         article.Reject();
 
         //act
@@ -69,12 +60,8 @@ public class ArchiveArticleTests
     public void Should_Throw_Exception_When_Trying_Archive_When_Status_Is_Draft()
     {
         //arrange
-        long id = 1;
-        var title = new ArticleTitle("a".PadLeft(5, '-'));
-        var content = new ArticleContent("a".PadLeft(10, '-'));
-        long authorId = 1;
-        long categoryId = 1;
-        var article = new Article(id, title, content, authorId, categoryId);
+        var article = _builder.Build();
+
 
         //act
         Action archiveArticle = () => article.Archive();
