@@ -44,7 +44,7 @@ public class PublishArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Publish_When_Status_Is_Rejected()
+    public void Should_Throw_Exception_When_Trying_To_Publish_When_Status_Is_Rejected()
     {
         //arrange
         var article = _builder.Build();
@@ -60,7 +60,7 @@ public class PublishArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Publish_When_Status_Is_Archived()
+    public void Should_Throw_Exception_When_Trying_To_Publish_When_Status_Is_Archived()
     {
         //arrange
         var article = _builder.Build();

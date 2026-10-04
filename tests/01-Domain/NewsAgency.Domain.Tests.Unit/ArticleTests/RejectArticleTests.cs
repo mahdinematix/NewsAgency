@@ -14,7 +14,7 @@ public class RejectArticleTests
         _builder = new ArticleTestBuilder();
     }
     [Fact]
-    public void Should_Can_Reject_When_Status_Is_Draft()
+    public void Should_Reject_When_Status_Is_Draft()
     {
         //arrange
         var article = _builder.Build();
@@ -43,7 +43,7 @@ public class RejectArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Reject_When_Status_Is_Archived()
+    public void Should_Throw_Exception_When_Trying_To_Reject_When_Status_Is_Archived()
     {
         //arrange
         var article = _builder.Build();
@@ -59,7 +59,7 @@ public class RejectArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Reject_When_Status_Is_Published()
+    public void Should_Throw_Exception_When_Trying_To_Reject_When_Status_Is_Published()
     {
         //arrange
         var article = _builder.Build();

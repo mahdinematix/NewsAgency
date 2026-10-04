@@ -4,7 +4,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Domain.ArticleAgg.Entities;
 
-public class Article 
+public class Article
 {
     public long Id { get; private set; }
     public ArticleTitle Title { get; private set; }
@@ -23,9 +23,22 @@ public class Article
         Status = ArticleStatus.Draft;
     }
 
+    public void Edit(ArticleTitle title, ArticleContent content, long authorId, long categoryId)
+    {
+        if (Status == ArticleStatus.Published || Status == ArticleStatus.Archived)
+        {
+            throw new DomainStateException(Messages.OperationCannotDoneFromThisStatus);
+        }
+
+        Title = title;
+        Content = content;
+        AuthorId = authorId;
+        CategoryId = categoryId;
+    }
+
     public void Publish()
     {
-        if (Status == ArticleStatus.Rejected || Status==ArticleStatus.Archived)
+        if (Status == ArticleStatus.Rejected || Status == ArticleStatus.Archived)
         {
             throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
 
@@ -52,18 +65,18 @@ public class Article
 
     public void Reject()
     {
-        if (Status==ArticleStatus.Published || Status == ArticleStatus.Archived)
+        if (Status == ArticleStatus.Published || Status == ArticleStatus.Archived)
         {
             throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
 
         }
 
-        if (Status==ArticleStatus.Rejected)
+        if (Status == ArticleStatus.Rejected)
         {
             return;
         }
         Status = ArticleStatus.Rejected;
-        
+
     }
 
     public void MoveToDraft()

@@ -58,7 +58,7 @@ public class MoveToDraftArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_To_Move_Draft_When_Status_Is_Published()
+    public void Should_Throw_Exception_When_Trying_To_Move_To_Draft_When_Status_Is_Published()
     {
         //arrange
         var article = _builder.Build();

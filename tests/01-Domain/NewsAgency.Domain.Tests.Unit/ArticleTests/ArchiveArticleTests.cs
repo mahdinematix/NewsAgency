@@ -43,7 +43,7 @@ public class ArchiveArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Archive_When_Status_Is_Rejected()
+    public void Should_Throw_Exception_When_Trying_To_Archive_When_Status_Is_Rejected()
     {
         //arrange
         var article = _builder.Build();
@@ -57,7 +57,7 @@ public class ArchiveArticleTests
     }
 
     [Fact]
-    public void Should_Throw_Exception_When_Trying_Archive_When_Status_Is_Draft()
+    public void Should_Throw_Exception_When_Trying_To_Archive_When_Status_Is_Draft()
     {
         //arrange
         var article = _builder.Build();

@@ -6,8 +6,8 @@ namespace NewsAgency.Domain.Tests.Unit.Builders;
 public class ArticleTestBuilder
 {
     private readonly long _id = 1;
-    public ArticleTitle Title = new ArticleTitle("a".PadLeft(5, '-'));
-    public ArticleContent Content = new ArticleContent("a".PadLeft(10, '-'));
+    private ArticleTitle Title = new ArticleTitle("a".PadLeft(5, '-'));
+    private ArticleContent Content = new ArticleContent("a".PadLeft(10, '-'));
     private readonly long _authorId = 1;
     private readonly long _categoryId = 1;
 
