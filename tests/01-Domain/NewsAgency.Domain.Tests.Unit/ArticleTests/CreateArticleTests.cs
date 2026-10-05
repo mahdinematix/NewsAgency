@@ -42,8 +42,4 @@ public class CreateArticleTests
         //assert
         article.Status.Should().Be(ArticleStatus.Draft);
     }
-
-    
-
 }
-

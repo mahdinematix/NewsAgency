@@ -1,24 +1,24 @@
 ﻿using NewsAgency.Domain.Common;
 using NewsAgency.Domain.Exceptions;
 
-namespace NewsAgency.Domain.ArticleAgg.ValueObjects;
+namespace NewsAgency.Domain.CategoryAgg.ValueObjects;
 
-public class ArticleContent : BaseValueObject<ArticleContent>
+public class CategoryTitle :BaseValueObject<CategoryTitle>
 {
     public string Value { get; }
 
-    public ArticleContent(string value)
+    public CategoryTitle(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new InvalidValueObjectStateException(Messages.ValueCannotBeNull);
         }
 
-        if (value.Length < 10)
+        if (value.Length < 2)
         {
             throw new InvalidValueObjectStateException(Messages.ValueFailureToObserveMinLength);
         }
-        if (value.Length > 5000)
+        if (value.Length > 50)
         {
             throw new InvalidValueObjectStateException(Messages.ValueFailureToObserveMaxLength);
         }
