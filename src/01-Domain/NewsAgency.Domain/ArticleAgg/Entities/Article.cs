@@ -4,9 +4,8 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Domain.ArticleAgg.Entities;
 
-public class Article
+public class Article : BaseEntity
 {
-    public long Id { get; private set; }
     public ArticleTitle Title { get; private set; }
     public ArticleContent Content { get; private set; }
     public long AuthorId { get; private set; }

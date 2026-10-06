@@ -4,9 +4,8 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Domain.CategoryAgg.Entities;
 
-public class Category
+public class Category : BaseEntity
 {
-    public long Id { get; private set; }
     public Title Title { get; private set; }
     public long? ParentId { get; private set; }
     public bool IsRemoved { get; private set; }

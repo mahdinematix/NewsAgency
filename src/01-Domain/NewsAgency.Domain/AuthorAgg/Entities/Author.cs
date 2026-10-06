@@ -1,10 +1,10 @@
 ﻿using NewsAgency.Domain.AuthorAgg.ValueObjects;
+using NewsAgency.Domain.Common;
 
 namespace NewsAgency.Domain.AuthorAgg.Entities;
 
-public class Author
+public class Author : BaseEntity
 {
-    public long Id { get; private set; }
     public FirstName FirstName { get; private set; }
     public LastName LastName { get; private set; }
     public Email Email { get; private set; }

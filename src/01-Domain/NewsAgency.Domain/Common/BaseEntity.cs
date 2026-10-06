@@ -2,14 +2,14 @@
 
 public class BaseEntity<TId>
 {
-
     public TId Id { get; protected set; }
 
-
-
     public bool Equals(BaseEntity<TId>? other) => this == other;
-    public override bool Equals(object? obj)=>
-         obj is BaseEntity<TId> otherObject && Id.Equals(otherObject.Id);
+
+    public override bool Equals(object? obj) =>
+        obj is BaseEntity<TId> otherObject &&
+        GetType() == otherObject.GetType() &&
+        Id.Equals(otherObject.Id);
 
     public override int GetHashCode() => Id.GetHashCode();
     public static bool operator ==(BaseEntity<TId> left, BaseEntity<TId> right)
@@ -25,9 +25,7 @@ public class BaseEntity<TId>
 
     public static bool operator !=(BaseEntity<TId> left, BaseEntity<TId> right)
         => !(right == left);
-
 }
-
 
 public class BaseEntity : BaseEntity<long>
 {
