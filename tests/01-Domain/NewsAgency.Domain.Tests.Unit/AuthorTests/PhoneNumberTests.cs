@@ -24,7 +24,6 @@ public class PhoneNumberTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    [InlineData("  ")]
     public void Should_Throw_Exception_When_Value_Is_Null_Or_WhiteSpace(string value)
     {
         //act
@@ -37,7 +36,7 @@ public class PhoneNumberTests
     [Theory]
     [InlineData(9)]
     [InlineData(15)]
-    public void Should_Throw_Exception_When_Value_Failure_To_Observe_Length_Validation(int length)
+    public void Should_Throw_Exception_When_Value_Length_Is_Invalid(int length)
     {
         //arrange
         string value = new string('1',length);

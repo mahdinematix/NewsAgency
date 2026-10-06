@@ -9,7 +9,7 @@ public class FirstNameTests
     [Theory]
     [InlineData(2)]
     [InlineData(50)]
-    public void Should_Create_When_Value_Success_To_Observe_Length_Validation(int length)
+    public void Should_Create_When_Value_Length_Is_Valid(int length)
     {
         //arrange
         string value = new string('a', length);
@@ -25,7 +25,7 @@ public class FirstNameTests
     [Theory]
     [InlineData(1)]
     [InlineData(51)]
-    public void Should_Throw_Exception_When_Value_Failure_To_Observe_Length_Validation(int length)
+    public void Should_Throw_Exception_When_Value_Length_Is_Invalid(int length)
     {
         //arrange
         string value = new string('a', length);
@@ -41,7 +41,6 @@ public class FirstNameTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    [InlineData("  ")]
     public void Should_Throw_Exception_When_Value_Is_Null_Or_WhiteSpace(string value)
     {
         //act

@@ -18,5 +18,25 @@ public class Author
         Email = email;
         PhoneNumber = phoneNumber;
     }
-}
 
+    public void ChangeFirstName(FirstName firstName)
+    {
+        FirstName = firstName;
+    }
+
+    public void ChangeLastName(LastName lastName)
+    {
+        LastName = lastName;
+    }
+
+    public void ChangeEmail(Email email)
+    {
+        Email = email;
+    }
+
+    public void ChangePhoneNumber(PhoneNumber phoneNumber)
+    {
+        PhoneNumber = phoneNumber;
+    }
+
+}

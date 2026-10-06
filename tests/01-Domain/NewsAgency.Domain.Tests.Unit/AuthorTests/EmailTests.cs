@@ -24,7 +24,7 @@ public class EmailTests
     {
         //arrange
         int maxlength = 256;
-        string value = "test@example.com".PadLeft(maxlength);
+        string value = new string('a', maxlength) + "@example.com";
 
         //act
         Action createEmail = () => new Email(value);
@@ -37,7 +37,6 @@ public class EmailTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    [InlineData("  ")]
     public void Should_Throw_Exception_When_Value_Is_Null_Or_WhiteSpace(string value)
     {
         //act
@@ -52,7 +51,9 @@ public class EmailTests
     [InlineData("test")]
     [InlineData("@example")]
     [InlineData("@example.com")]
-    public void Should_Throw_Exception_When_Failure_ToObserve_Email_Format(string value)
+    [InlineData("test@example")]
+    [InlineData("test @example.com")]
+    public void Should_Throw_Exception_When_Email_Format_Is_Invalid(string value)
     {
         //act
         Action createEmail = () => new Email(value);

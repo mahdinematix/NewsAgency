@@ -15,15 +15,4 @@ public class ArticleTestBuilder
     {
         return new Article(_id, Title, Content, _authorId, _categoryId);
     }
-
-    public ArticleTestBuilder WithTitle(ArticleTitle title)
-    {
-        Title = title;
-        return this;
-    }
-    public ArticleTestBuilder WithContent(ArticleContent content)
-    {
-        Content = content;
-        return this;
-    }
 }

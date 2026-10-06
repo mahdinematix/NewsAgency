@@ -16,11 +16,6 @@ public class CategoryTestBuilder
         return new Category(_id, _title, _parentId);
     }
 
-    public CategoryTestBuilder WithId(long id)
-    {
-        _id = id;
-        return this;
-    }
     public CategoryTestBuilder WithTitle(Title title)
     {
         _title = title;
