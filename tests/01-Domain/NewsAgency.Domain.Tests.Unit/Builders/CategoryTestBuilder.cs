@@ -6,7 +6,7 @@ namespace NewsAgency.Domain.Tests.Unit.Builders;
 public class CategoryTestBuilder
 {
     private long _id = 1;
-    private CategoryTitle _title = new(new string('a', 2));
+    private Title _title = new(new string('a', 2));
 
     private long? _parentId = null;
 
@@ -21,7 +21,7 @@ public class CategoryTestBuilder
         _id = id;
         return this;
     }
-    public CategoryTestBuilder WithTitle(CategoryTitle title)
+    public CategoryTestBuilder WithTitle(Title title)
     {
         _title = title;
         return this;

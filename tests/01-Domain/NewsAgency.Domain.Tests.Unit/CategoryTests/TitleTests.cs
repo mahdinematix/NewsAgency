@@ -4,7 +4,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Domain.Tests.Unit.CategoryTests;
 
-public class CategoryTitleTests
+public class TitleTests
 {
     [Theory]
     [InlineData(2)]
@@ -15,7 +15,7 @@ public class CategoryTitleTests
         string value = new string('a',length);
 
         //act
-        var categoryTitle = new CategoryTitle(value);
+        var categoryTitle = new Title(value);
 
         //assert
         categoryTitle.Value.Should().Be(value);
@@ -31,7 +31,7 @@ public class CategoryTitleTests
         string value = "A".PadLeft(length, '-');
 
         //act
-        Action categoryTitle = () => new CategoryTitle(value);
+        Action categoryTitle = () => new Title(value);
 
         //assert
         categoryTitle.Should().ThrowExactly<InvalidValueObjectStateException>();

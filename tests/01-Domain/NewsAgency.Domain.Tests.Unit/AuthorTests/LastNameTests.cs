@@ -1,0 +1,53 @@
+﻿using FluentAssertions;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
+using NewsAgency.Domain.Exceptions;
+
+namespace NewsAgency.Domain.Tests.Unit.AuthorTests;
+
+public class LastNameTests
+{
+    [Theory]
+    [InlineData(2)]
+    [InlineData(50)]
+    public void Should_Create_When_Value_Success_To_Observe_Length_Validation(int length)
+    {
+        //arrange
+        string value = new string('a', length);
+
+        //act
+        var lastName = new LastName(value);
+
+        //assert
+        lastName.Value.Should().Be(value);
+    }
+
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(51)]
+    public void Should_Throw_Exception_When_Value_Failure_To_Observe_Length_Validation(int length)
+    {
+        //arrange
+        string value = new string('a', length);
+
+        //act
+        Action createLastName = () => new LastName(value);
+
+        //assert
+        createLastName.Should().ThrowExactly<InvalidValueObjectStateException>();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("  ")]
+    public void Should_Throw_Exception_When_Value_Is_Null_Or_WhiteSpace(string value)
+    {
+        //act
+        Action createLastName = () => new LastName(value);
+
+        //assert
+        createLastName.Should().ThrowExactly<InvalidValueObjectStateException>();
+    }
+}

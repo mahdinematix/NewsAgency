@@ -21,7 +21,7 @@ public class CreateCategoryTests
     {
         //arrange
         long id = 1;
-        CategoryTitle title = new(new string('a',2));
+        Title title = new(new string('a',2));
 
         //act
         var category = new Category(id, title, parentId);

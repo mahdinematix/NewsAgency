@@ -1,19 +1,18 @@
 ﻿using NewsAgency.Domain.Common;
 using NewsAgency.Domain.Exceptions;
 
-namespace NewsAgency.Domain.CategoryAgg.ValueObjects;
+namespace NewsAgency.Domain.AuthorAgg.ValueObjects;
 
-public class CategoryTitle :BaseValueObject<CategoryTitle>
+public class LastName : BaseValueObject<LastName>
 {
     public string Value { get; }
 
-    public CategoryTitle(string value)
+    public LastName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new InvalidValueObjectStateException(Messages.ValueCannotBeNull);
         }
-
         if (value.Length < 2)
         {
             throw new InvalidValueObjectStateException(Messages.ValueFailureToObserveMinLength);
@@ -30,4 +29,3 @@ public class CategoryTitle :BaseValueObject<CategoryTitle>
         yield return Value;
     }
 }
-

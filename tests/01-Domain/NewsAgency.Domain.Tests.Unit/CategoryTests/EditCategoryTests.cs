@@ -18,8 +18,8 @@ public class EditCategoryTests
     public void Should_Change_Title_When_Value_Is_Valid()
     {
         //arrange
-        CategoryTitle oldTitle = new(new string('a', 2));
-        CategoryTitle newTitle = new(new string('b', 2));
+        Title oldTitle = new(new string('a', 2));
+        Title newTitle = new(new string('b', 2));
         var category = _builder.WithTitle(oldTitle).Build();
 
         //act

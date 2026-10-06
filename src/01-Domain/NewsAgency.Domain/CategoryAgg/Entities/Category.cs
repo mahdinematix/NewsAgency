@@ -7,11 +7,11 @@ namespace NewsAgency.Domain.CategoryAgg.Entities;
 public class Category
 {
     public long Id { get; private set; }
-    public CategoryTitle Title { get; private set; }
+    public Title Title { get; private set; }
     public long? ParentId { get; private set; }
     public bool IsRemoved { get; private set; }
 
-    public Category(long id, CategoryTitle title, long? parentId = null)
+    public Category(long id, Title title, long? parentId = null)
     {
         if (id == parentId)
         {
@@ -23,7 +23,7 @@ public class Category
         IsRemoved = false;
     }
 
-    public void ChangeTitle(CategoryTitle title)
+    public void ChangeTitle(Title title)
     {
         Title = title;
     }
