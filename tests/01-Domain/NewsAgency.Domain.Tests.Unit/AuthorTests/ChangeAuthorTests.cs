@@ -1,22 +1,16 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Builders;
+using NewsAgency.Domain.Tests.Unit.Factories;
 
 namespace NewsAgency.Domain.Tests.Unit.AuthorTests
 {
     public class ChangeAuthorTests
     {
-        private readonly AuthorTestBuilder _builder;
-        public ChangeAuthorTests()
-        {
-            _builder = new AuthorTestBuilder();
-        }
-
         [Fact]
         public void Should_Change_FirstName_When_Data_Is_Valid()
         {
             //arrange
-            var author = _builder.Build();
+            var author = AuthorFactory.Create();
             FirstName newFirstName = new(new string('c', 3));
 
 
@@ -30,7 +24,7 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_LastName_When_Data_Is_Valid()
         {
             //arrange
-            var author = _builder.Build();
+            var author = AuthorFactory.Create();
             LastName newLastName = new(new string('c', 4));
 
             //act
@@ -44,7 +38,7 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_Email_When_Data_Is_Valid()
         {
             //arrange
-            var author = _builder.Build();
+            var author = AuthorFactory.Create();
             Email newEmail = new("changeTest@example.com");
 
             //act
@@ -58,7 +52,7 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_PhoneNumber_When_Data_Is_Valid()
         {
             //arrange
-            var author = _builder.Build();
+            var author = AuthorFactory.Create();
             PhoneNumber newPhoneNumber = new("00989123456780");
 
             //act

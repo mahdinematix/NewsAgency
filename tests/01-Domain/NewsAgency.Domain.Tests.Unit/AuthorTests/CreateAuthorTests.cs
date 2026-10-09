@@ -25,6 +25,7 @@ public class CreateAuthorTests
         author.LastName.Should().Be(lastName);
         author.Email.Should().Be(email);
         author.PhoneNumber.Should().Be(phoneNumber);
+        author.Articles.Should().BeEmpty();
     }
 }
 

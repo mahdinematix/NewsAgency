@@ -1,4 +1,5 @@
-﻿using NewsAgency.Domain.AuthorAgg.ValueObjects;
+﻿using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Common;
 
 namespace NewsAgency.Domain.AuthorAgg.Entities;
@@ -9,6 +10,7 @@ public class Author : BaseEntity
     public LastName LastName { get; private set; }
     public Email Email { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
+    public ICollection<Article> Articles { get; private set; }
 
     public Author(long id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber)
     {
@@ -17,6 +19,7 @@ public class Author : BaseEntity
         LastName = lastName;
         Email = email;
         PhoneNumber = phoneNumber;
+        Articles = new List<Article>();
     }
 
     public void ChangeFirstName(FirstName firstName)

@@ -1,24 +1,17 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.Exceptions;
-using NewsAgency.Domain.Tests.Unit.Builders;
+using NewsAgency.Domain.Tests.Unit.Factories;
 
 namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
 public class RejectArticleTests
 {
-    private readonly ArticleTestBuilder _builder;
-
-    public RejectArticleTests()
-    {
-        _builder = new ArticleTestBuilder();
-    }
     [Fact]
     public void Should_Reject_When_Status_Is_Draft()
     {
         //arrange
-        var article = _builder.Build();
-
+        var article = ArticleFactory.Create();
 
         //act
         article.Reject();
@@ -31,8 +24,7 @@ public class RejectArticleTests
     public void Should_Not_Change_Status_When_Status_Is_Rejected_Already()
     {
         //arrange
-        var article = _builder.Build();
-
+        var article = ArticleFactory.Create();
         article.Reject();
 
         //act
@@ -46,8 +38,7 @@ public class RejectArticleTests
     public void Should_Throw_Exception_When_Trying_To_Reject_When_Status_Is_Archived()
     {
         //arrange
-        var article = _builder.Build();
-
+        var article = ArticleFactory.Create();
         article.Publish();
         article.Archive();
 
@@ -62,8 +53,7 @@ public class RejectArticleTests
     public void Should_Throw_Exception_When_Trying_To_Reject_When_Status_Is_Published()
     {
         //arrange
-        var article = _builder.Build();
-
+        var article = ArticleFactory.Create();
         article.Publish();
 
         //act

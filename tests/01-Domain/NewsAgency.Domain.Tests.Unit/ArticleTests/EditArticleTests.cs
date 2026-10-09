@@ -3,6 +3,7 @@ using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
 using NewsAgency.Domain.Tests.Unit.Builders;
+using NewsAgency.Domain.Tests.Unit.Factories;
 
 namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
@@ -82,8 +83,7 @@ public class EditArticleTests
     private Article ArrangeArticleForEdit(out ArticleTitle title, out ArticleContent content, out long authorId,
         out long categoryId)
     {
-        var articleBuilder = new ArticleTestBuilder();
-        var article = articleBuilder.Build();
+        var article = ArticleFactory.Create();
         title = new ArticleTitle("b".PadLeft(5, '-'));
         content = new ArticleContent("b".PadLeft(10, '-'));
         authorId = 2;

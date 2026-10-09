@@ -30,6 +30,7 @@ public class CreateCategoryTests
         category.Id.Should().Be(id);
         category.Title.Should().Be(title);
         category.ParentId.Should().Be(parentId);
+        category.Articles.Should().BeEmpty();
     }
 
     [Fact]
