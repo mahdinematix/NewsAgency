@@ -3,12 +3,17 @@ using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
 using NewsAgency.Domain.Tests.Unit.Builders;
-using NewsAgency.Domain.Tests.Unit.Factories;
 
 namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
 public class EditArticleTests
 {
+    private readonly ArticleTestBuilder _articleBuilder;
+
+    public EditArticleTests()
+    {
+        _articleBuilder = new ArticleTestBuilder();
+    }
     [Fact]
     public void Should_Edit_When_Status_Is_Draft()
     {
@@ -83,7 +88,7 @@ public class EditArticleTests
     private Article ArrangeArticleForEdit(out ArticleTitle title, out ArticleContent content, out long authorId,
         out long categoryId)
     {
-        var article = ArticleFactory.Create();
+        var article = _articleBuilder.Build();
         title = new ArticleTitle("b".PadLeft(5, '-'));
         content = new ArticleContent("b".PadLeft(10, '-'));
         authorId = 2;

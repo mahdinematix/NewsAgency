@@ -1,16 +1,17 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 
 namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
 public class CreateArticleTests
 {
-    private readonly ArticleFactory _builder;
+    private readonly ArticleTestBuilder _articleBuilder;
+
     public CreateArticleTests()
     {
-        _builder = new ArticleFactory();
+        _articleBuilder = new ArticleTestBuilder();
     }
     [Fact]
     public void Should_Create_Article_With_Valid_Properties()
@@ -37,7 +38,7 @@ public class CreateArticleTests
     public void Should_Create_Article_As_Draft()
     {
         //act
-        var article = ArticleFactory.Create();
+        var article = _articleBuilder.Build();
 
         //assert
         article.Status.Should().Be(ArticleStatus.Draft);
