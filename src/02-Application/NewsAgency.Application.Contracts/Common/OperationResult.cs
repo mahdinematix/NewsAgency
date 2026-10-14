@@ -5,10 +5,6 @@ public class OperationResult
     public bool IsSuccess { get; private set; }
     public string Message { get; private set; }
 
-    public OperationResult()
-    {
-        IsSuccess = false;
-    }
 
     public OperationResult Succeeded(string message = "Operation successfully done!")
     {

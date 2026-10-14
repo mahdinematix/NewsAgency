@@ -9,19 +9,27 @@ namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers;
 
 public class CreateArticleCommandHandlerTests
 {
+    private readonly IArticleCommandRepository _commandRepository;
+    private readonly CreateArticleCommandHandler _commandHandler;
+
+    public CreateArticleCommandHandlerTests()
+    {
+        _commandRepository = Substitute.For<IArticleCommandRepository>();
+        _commandHandler = new CreateArticleCommandHandler(_commandRepository);
+    }
+
     [Fact]
-    public async Task Should_Create_And_Return_Success_When_Command_Is_Valid()
+    public async Task Should_Create_And_Return_Success_Result_When_Command_Is_Valid()
     {
         //arrange
-        var command = new CreateArticleCommand(16, "test", "testtest123", 2, 3);
-        var commandRepository = Substitute.For<IArticleCommandRepository>();
-        var commandHandler = new CreateArticleCommandHandler(commandRepository);
+        var command = new CreateArticleCommand(23, "Title Test", "Content Test", 5, 3);
+
 
         //act
-        var result = await commandHandler.Handle(command, CancellationToken.None);
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         //assert
-        await commandRepository.Received(1).Create(Arg.Any<Article>(), CancellationToken.None);
+        await _commandRepository.Received(1).Create(Arg.Any<Article>(), CancellationToken.None);
         result.IsSuccess.Should().BeTrue();
 
     }
@@ -30,24 +38,13 @@ public class CreateArticleCommandHandlerTests
     public async Task Should_Pass_Real_Command_Data_To_Repository()
     {
         // arrange
-        var command = new CreateArticleCommand(
-            16,
-            "Test Article",
-            "This is valid test content",
-            2,
-            3);
-
-        var commandRepository =
-            Substitute.For<IArticleCommandRepository>();
-
-        var commandHandler =
-            new CreateArticleCommandHandler(commandRepository);
+        var command = new CreateArticleCommand(23, "Title Test", "Content Test", 5, 3);
 
         // act
-        await commandHandler.Handle(command, CancellationToken.None);
+        await _commandHandler.Handle(command, CancellationToken.None);
 
         // assert
-        await commandRepository.Received(1).Create(
+        await _commandRepository.Received(1).Create(
             Arg.Is<Article>(article =>
                 article.Id == command.Id &&
                 article.Title.Value == command.Title &&
@@ -71,20 +68,14 @@ public class CreateArticleCommandHandlerTests
             2,
             3);
 
-        var commandRepository =
-            Substitute.For<IArticleCommandRepository>();
-
-        var commandHandler =
-            new CreateArticleCommandHandler(commandRepository);
-
         // act
-        var result = await commandHandler.Handle(
+        var result = await _commandHandler.Handle(
             command,
             CancellationToken.None);
 
         // assert
         result.IsSuccess.Should().BeFalse();
-        await commandRepository.DidNotReceive()
+        await _commandRepository.DidNotReceive()
             .Create(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
@@ -104,20 +95,14 @@ public class CreateArticleCommandHandlerTests
             2,
             3);
 
-        var commandRepository =
-            Substitute.For<IArticleCommandRepository>();
-
-        var commandHandler =
-            new CreateArticleCommandHandler(commandRepository);
-
         // act
-        var result = await commandHandler.Handle(
+        var result = await _commandHandler.Handle(
             command,
             CancellationToken.None);
 
         // assert
         result.IsSuccess.Should().BeFalse();
-        await commandRepository.DidNotReceive()
+        await _commandRepository.DidNotReceive()
             .Create(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
@@ -127,26 +112,18 @@ public class CreateArticleCommandHandlerTests
     [Fact]
     public async Task Should_Return_Failed_Result_When_Request_Is_Null()
     {
-        //arrange
-        var commandRepository =
-            Substitute.For<IArticleCommandRepository>();
-
-        var commandHandler =
-            new CreateArticleCommandHandler(commandRepository);
-
         // act
-        var result = await commandHandler.Handle(
+        var result = await _commandHandler.Handle(
             null,
             CancellationToken.None);
 
         // assert
         result.IsSuccess.Should().BeFalse();
 
-        await commandRepository.DidNotReceive()
+        await _commandRepository.DidNotReceive()
             .Create(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
     }
-
 
 }

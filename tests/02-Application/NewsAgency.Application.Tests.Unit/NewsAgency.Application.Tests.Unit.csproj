@@ -9,15 +9,16 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="FluentAssertions" Version="8.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="NSubstitute" Version="6.2.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application.Contracts\NewsAgency.Application.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\src\03-Infrastructure\NewsAgency.Infra.Data.EFCore.Commands\NewsAgency.Infra.Data.EFCore.Commands.csproj" />
-    <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain.Tests.Unit\NewsAgency.Domain.Tests.Unit.csproj" />
+    <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application\NewsAgency.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

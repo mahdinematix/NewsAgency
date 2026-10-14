@@ -89,8 +89,8 @@ public class EditArticleTests
         out long categoryId)
     {
         var article = _articleBuilder.Build();
-        title = new ArticleTitle("b".PadLeft(5, '-'));
-        content = new ArticleContent("b".PadLeft(10, '-'));
+        title = new ArticleTitle("a".PadLeft(6, '-'));
+        content = new ArticleContent("b".PadLeft(12, '-'));
         authorId = 2;
         categoryId = 2;
         return article;
