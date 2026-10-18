@@ -6,6 +6,20 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests;
 
 public class PhoneNumberTests
 {
+
+    [Fact]
+    public void Should_Return_PhoneNumber_Type_From_String()
+    {
+        //arrange
+        string phoneNumberExample = "09123456789";
+
+        //act
+        var phoneNumber = PhoneNumber.FromString(phoneNumberExample);
+
+        //assert
+        phoneNumber.Should().BeOfType<PhoneNumber>();
+        phoneNumber.Value.Should().Be(phoneNumberExample);
+    }
     [Theory]
     [InlineData("00989123456789")]
     [InlineData("989123456789")]

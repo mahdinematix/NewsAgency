@@ -17,17 +17,15 @@ public class CreateArticleTests
     public void Should_Create_Article_With_Valid_Properties()
     {
         //arrange
-        long id = 1;
-        var title =new ArticleTitle("title");
+        var title =new ArticleTitle("categoryTitle");
         var content = new ArticleContent("content123");
         long authorId = 1;
         long categoryId = 1;
 
         //act
-        var article = new Article(id,title,content,authorId,categoryId);
+        var article = new Article(title,content,authorId,categoryId);
 
         //assert
-        article.Id.Should().Be(id);
         article.Title.Should().Be(title);
         article.Content.Should().Be(content);
         article.AuthorId.Should().Be(authorId);

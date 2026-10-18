@@ -12,9 +12,8 @@ public class Article : BaseEntity
     public long CategoryId { get; private set; }
     public ArticleStatus Status { get; private set; }
 
-    public Article(long id, ArticleTitle title, ArticleContent content, long authorId, long categoryId)
+    public Article(ArticleTitle title, ArticleContent content, long authorId, long categoryId)
     {
-        Id = id;
         Title = title;
         Content = content;
         AuthorId = authorId;

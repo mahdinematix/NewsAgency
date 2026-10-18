@@ -3,11 +3,12 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Domain.CategoryAgg.ValueObjects;
 
-public class Title :BaseValueObject<Title>
+public class CategoryTitle :BaseValueObject<CategoryTitle>
 {
     public string Value { get; }
+    public static CategoryTitle FromString(string value) => new (value);
 
-    public Title(string value)
+    public CategoryTitle(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

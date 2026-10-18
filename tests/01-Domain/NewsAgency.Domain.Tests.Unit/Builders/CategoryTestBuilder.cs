@@ -5,20 +5,19 @@ namespace NewsAgency.Domain.Tests.Unit.Builders;
 
 public class CategoryTestBuilder
 {
-    private long _id = 1;
-    private Title _title = new(new string('a', 2));
+    private CategoryTitle _categoryTitle = new(new string('a', 2));
 
     private long? _parentId = null;
 
 
     public Category Build()
     {
-        return new Category(_id, _title, _parentId);
+        return new Category(_categoryTitle, _parentId);
     }
 
-    public CategoryTestBuilder WithTitle(Title title)
+    public CategoryTestBuilder WithTitle(CategoryTitle categoryTitle)
     {
-        _title = title;
+        _categoryTitle = categoryTitle;
         return this;
     }
     public CategoryTestBuilder WithParentId(long? parentId)

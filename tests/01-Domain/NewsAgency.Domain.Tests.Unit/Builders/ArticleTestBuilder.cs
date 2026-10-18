@@ -5,7 +5,6 @@ namespace NewsAgency.Domain.Tests.Unit.Builders;
 
 public class ArticleTestBuilder
 {
-    private long _id = 1;
     private ArticleTitle _title = new("a".PadLeft(5, '-'));
     private ArticleContent _content = new("b".PadLeft(10, '-'));
     private long _authorId = 1;
@@ -14,12 +13,12 @@ public class ArticleTestBuilder
 
     public Article Build()
     {
-        return new Article(_id, _title, _content, _authorId, _categoryId);
+        return new Article(_title, _content, _authorId, _categoryId);
     }
 
-    public ArticleTestBuilder WithId(int id)
+    public ArticleTestBuilder WithTitle(ArticleTitle title)
     {
-        _id = id;
+        _title = title;
         return this;
     }
 }

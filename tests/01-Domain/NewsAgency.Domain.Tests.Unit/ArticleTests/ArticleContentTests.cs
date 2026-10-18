@@ -6,6 +6,20 @@ namespace NewsAgency.Domain.Tests.Unit.ArticleTests;
 
 public class ArticleContentTests
 {
+
+    [Fact]
+    public void Should_Return_ArticleContent_Type_From_String()
+    {
+        //arrange
+        string title = "test content";
+
+        //act
+        var articleContent = ArticleContent.FromString(title);
+
+        //assert
+        articleContent.Should().BeOfType<ArticleContent>();
+        articleContent.Value.Should().Be(title);
+    }
     [Theory]
     [InlineData(10)]
     [InlineData(5000)]

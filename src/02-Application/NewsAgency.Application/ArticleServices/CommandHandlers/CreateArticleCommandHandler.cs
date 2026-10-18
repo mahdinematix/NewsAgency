@@ -28,8 +28,8 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand,
                 return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
             }
 
-            var article = new Article(request.Id, new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
-            await _commandRepository.Create(article, cancellationToken);
+            var article = new Article(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
+            await _commandRepository.CreateAsync(article, cancellationToken);
             return operation.Succeeded();
         }
         catch (InvalidValueObjectStateException ex)

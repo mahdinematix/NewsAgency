@@ -6,6 +6,8 @@ namespace NewsAgency.Domain.AuthorAgg.ValueObjects;
 public class FirstName : BaseValueObject<FirstName>
 {
     public string Value { get; }
+    public static FirstName FromString(string value) => new(value);
+
 
     public FirstName(string value)
     {

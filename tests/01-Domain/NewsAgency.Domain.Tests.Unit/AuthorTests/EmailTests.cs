@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
 
@@ -6,6 +7,21 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests;
 
 public class EmailTests
 {
+    [Fact]
+    public void Should_Return_Email_Type_From_String()
+    {
+        //arrange
+        string emailExample = "email@example.test";
+
+        //act
+        var email = Email.FromString(emailExample);
+
+        //assert
+        email.Should().BeOfType<Email>();
+        email.Value.Should().Be(emailExample);
+    }
+
+
     [Theory]
     [InlineData("test@example.com")]
     [InlineData("john.doe@example.com")]

@@ -6,6 +6,7 @@ namespace NewsAgency.Domain.ArticleAgg.ValueObjects;
 public class ArticleTitle : BaseValueObject<ArticleTitle>
 {
     public string Value { get; }
+    public static ArticleTitle FromString(string value) => new ArticleTitle(value);
 
     public ArticleTitle(string value)
     {

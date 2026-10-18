@@ -12,9 +12,8 @@ public class Author : BaseEntity
     public PhoneNumber PhoneNumber { get; private set; }
     public ICollection<Article> Articles { get; private set; }
 
-    public Author(long id, FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber)
+    public Author(FirstName firstName, LastName lastName, Email email, PhoneNumber phoneNumber)
     {
-        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

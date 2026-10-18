@@ -18,15 +18,15 @@ public class EditCategoryTests
     public void Should_Change_Title_When_Value_Is_Valid()
     {
         //arrange
-        Title oldTitle = new(new string('a', 2));
-        Title newTitle = new(new string('b', 2));
-        var category = _builder.WithTitle(oldTitle).Build();
+        CategoryTitle oldCategoryTitle = new(new string('a', 2));
+        CategoryTitle newCategoryTitle = new(new string('b', 2));
+        var category = _builder.WithTitle(oldCategoryTitle).Build();
 
         //act
-        category.ChangeTitle(newTitle);
+        category.ChangeTitle(newCategoryTitle);
 
         //assert
-        category.Title.Should().Be(newTitle);
+        category.CategoryTitle.Should().Be(newCategoryTitle);
     }
 
     [Theory]
@@ -43,21 +43,6 @@ public class EditCategoryTests
 
         //assert
         category.ParentId.Should().Be(newparentId);
-    }
-
-    [Fact]
-    public void Should_Throw_Exception_When_Category_Is_Its_Own_Parent()
-    {
-        //arrange
-        long oldparentId = 2;
-        long newparentId = 1;
-        var category = _builder.WithParentId(oldparentId).Build();
-
-        //act
-        Action changeParent = ()=>category.ChangeParent(newparentId);
-
-        //assert
-        changeParent.Should().ThrowExactly<DomainStateException>();
     }
 }
 

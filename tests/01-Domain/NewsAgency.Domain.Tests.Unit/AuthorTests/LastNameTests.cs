@@ -6,6 +6,20 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests;
 
 public class LastNameTests
 {
+    [Fact]
+    public void Should_Return_LastName_Type_From_String()
+    {
+        //arrange
+        string lastNameExample = "LastName test";
+
+        //act
+        var lastName = LastName.FromString(lastNameExample);
+
+        //assert
+        lastName.Should().BeOfType<LastName>();
+        lastName.Value.Should().Be(lastNameExample);
+    }
+
     [Theory]
     [InlineData(2)]
     [InlineData(50)]

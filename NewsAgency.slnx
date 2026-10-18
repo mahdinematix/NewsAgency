@@ -8,8 +8,7 @@
     <Project Path="src/02-Application/NewsAgency.Application/NewsAgency.Application.csproj" />
   </Folder>
   <Folder Name="/src/03-Infrastructure/">
-    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Commands/NewsAgency.Infra.Data.EFCore.Commands.csproj" />
-    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Queries/NewsAgency.Infra.Data.EFCore.Queries.csproj" />
+    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore/NewsAgency.Infra.Data.EFCore.csproj" Id="7270a8e2-1e7a-45aa-ae21-01e5ba6210d7" />
   </Folder>
   <Folder Name="/src/04-EndPoints/">
     <Project Path="src/04-EndPoints/NewsAgency.EndPoints.WebApi/NewsAgency.EndPoints.WebApi.csproj" />
@@ -23,8 +22,7 @@
     <Project Path="tests/02-Application/NewsAgency.Application.Tests.Unit/NewsAgency.Application.Tests.Unit.csproj" />
   </Folder>
   <Folder Name="/tests/03-Infrastructure/">
-    <Project Path="tests/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Commands.Tests.Integration/NewsAgency.Infra.Data.EFCore.Commands.Tests.Integration.csproj" Id="f914a544-ff35-43c1-bb65-c2a365cf107b" />
-    <Project Path="tests/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Queries.Tests.Integration/NewsAgency.Infra.Data.EFCore.Queries.Tests.Integration.csproj" Id="bc43bdfd-7a82-4059-a48c-242389127d93" />
+    <Project Path="tests/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Tests.Integration/NewsAgency.Infra.Data.EFCore.Tests.Integration.csproj" Id="32612ead-beea-49d5-b82a-d750449bcb3d" />
   </Folder>
   <Folder Name="/tests/04-EndPoints/" />
 </Solution>

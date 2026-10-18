@@ -20,27 +20,16 @@ public class CreateCategoryTests
     public void Should_Create_When_Data_Is_Valid(long? parentId)
     {
         //arrange
-        long id = 1;
-        Title title = new(new string('a',2));
+        CategoryTitle categoryTitle = new(new string('a',2));
 
         //act
-        var category = new Category(id, title, parentId);
+        var category = new Category(categoryTitle, parentId);
 
         //assert
-        category.Id.Should().Be(id);
-        category.Title.Should().Be(title);
+        category.CategoryTitle.Should().Be(categoryTitle);
         category.ParentId.Should().Be(parentId);
         category.Articles.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Should_Throw_Exception_When_Category_Is_Its_Own_Parent()
-    {
-       //act
-        Action createCategory = () => _builder.WithParentId(1).Build();
-
-        //assert
-        createCategory.Should().ThrowExactly<DomainStateException>();
+        category.Children.Should().BeEmpty();
     }
 
     [Fact]

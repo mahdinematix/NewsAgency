@@ -22,14 +22,14 @@ public class CreateArticleCommandHandlerTests
     public async Task Should_Create_And_Return_Success_Result_When_Command_Is_Valid()
     {
         //arrange
-        var command = new CreateArticleCommand(23, "Title Test", "Content Test", 5, 3);
+        var command = new CreateArticleCommand("CategoryTitle Test", "Content Test", 5, 3);
 
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         //assert
-        await _commandRepository.Received(1).Create(Arg.Any<Article>(), CancellationToken.None);
+        await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), CancellationToken.None);
         result.IsSuccess.Should().BeTrue();
 
     }
@@ -38,15 +38,14 @@ public class CreateArticleCommandHandlerTests
     public async Task Should_Pass_Real_Command_Data_To_Repository()
     {
         // arrange
-        var command = new CreateArticleCommand(23, "Title Test", "Content Test", 5, 3);
+        var command = new CreateArticleCommand("CategoryTitle Test", "Content Test", 5, 3);
 
         // act
         await _commandHandler.Handle(command, CancellationToken.None);
 
         // assert
-        await _commandRepository.Received(1).Create(
+        await _commandRepository.Received(1).CreateAsync(
             Arg.Is<Article>(article =>
-                article.Id == command.Id &&
                 article.Title.Value == command.Title &&
                 article.Content.Value == command.Content &&
                 article.AuthorId == command.AuthorId &&
@@ -62,7 +61,6 @@ public class CreateArticleCommandHandlerTests
     {
         // arrange
         var command = new CreateArticleCommand(
-            16,
             "A".PadLeft(length, '-'),
             "This is valid test content",
             2,
@@ -76,7 +74,7 @@ public class CreateArticleCommandHandlerTests
         // assert
         result.IsSuccess.Should().BeFalse();
         await _commandRepository.DidNotReceive()
-            .Create(
+            .CreateAsync(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
 
@@ -89,7 +87,6 @@ public class CreateArticleCommandHandlerTests
     {
         // arrange
         var command = new CreateArticleCommand(
-            16,
             "Test Article",
             "A".PadLeft(length, '-'),
             2,
@@ -103,7 +100,7 @@ public class CreateArticleCommandHandlerTests
         // assert
         result.IsSuccess.Should().BeFalse();
         await _commandRepository.DidNotReceive()
-            .Create(
+            .CreateAsync(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
 
@@ -121,7 +118,7 @@ public class CreateArticleCommandHandlerTests
         result.IsSuccess.Should().BeFalse();
 
         await _commandRepository.DidNotReceive()
-            .Create(
+            .CreateAsync(
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
     }

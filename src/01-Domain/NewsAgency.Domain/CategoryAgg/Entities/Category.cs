@@ -7,35 +7,28 @@ namespace NewsAgency.Domain.CategoryAgg.Entities;
 
 public class Category : BaseEntity
 {
-    public Title Title { get; private set; }
+    public CategoryTitle CategoryTitle { get; private set; }
     public long? ParentId { get; private set; }
     public bool IsRemoved { get; private set; }
     public ICollection<Article> Articles { get; private set; }
+    public ICollection<Category> Children { get; private set; }
 
-    public Category(long id, Title title, long? parentId = null)
+    public Category(CategoryTitle categoryTitle, long? parentId = null)
     {
-        if (id == parentId)
-        {
-            throw new DomainStateException(Messages.ParentOfCategoryCannotBeItself);
-        }
-        Id = id;
-        Title = title;
+        CategoryTitle = categoryTitle;
         ParentId = parentId;
         IsRemoved = false;
         Articles = new List<Article>();
+        Children = new List<Category>();
     }
 
-    public void ChangeTitle(Title title)
+    public void ChangeTitle(CategoryTitle categoryTitle)
     {
-        Title = title;
+        CategoryTitle = categoryTitle;
     }
 
     public void ChangeParent(long? parentId)
-    {
-        if (Id == parentId)
-        {
-            throw new DomainStateException(Messages.ParentOfCategoryCannotBeItself);
-        }
+    { 
         ParentId = parentId;
     }
 

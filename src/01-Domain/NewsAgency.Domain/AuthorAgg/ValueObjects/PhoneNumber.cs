@@ -6,6 +6,8 @@ namespace NewsAgency.Domain.AuthorAgg.ValueObjects;
 public class PhoneNumber : BaseValueObject<PhoneNumber>
 {
     public string Value { get; }
+    public static PhoneNumber FromString(string value) => new(value);
+
 
     public PhoneNumber(string value)
     {
