@@ -44,5 +44,9 @@ public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , Op
         {
             return operation.Failed(ex.Message);
         }
+        catch (InvalidValueObjectStateException ex)
+        {
+            return operation.Failed(ex.Message);
+        }
     }
 }

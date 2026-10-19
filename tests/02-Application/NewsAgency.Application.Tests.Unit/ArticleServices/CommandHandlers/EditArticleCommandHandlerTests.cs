@@ -57,6 +57,8 @@ public class EditArticleCommandHandlerTests
 
         // assert
         result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -72,8 +74,45 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
 
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Status_Is_Published()
+    {
+        //arrange
+        var article = _builder.Build();
+        article.Publish();
+        var command = new EditArticleCommand(article.Id, "Title Test edited", "Content Test edited", 1, 1);
+        _queryRepository.GetByAsync(command.Id).Returns(article);
 
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Status_Is_Archived()
+    {
+        //arrange
+        var article = _builder.Build();
+        article.Publish();
+        article.Archive();
+        var command = new EditArticleCommand(article.Id, "Title Test edited", "Content Test edited", 1, 1);
+        _queryRepository.GetByAsync(command.Id).Returns(article);
+
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
 }
