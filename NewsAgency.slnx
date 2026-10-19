@@ -24,5 +24,7 @@
   <Folder Name="/tests/03-Infrastructure/">
     <Project Path="tests/03-Infrastructure/NewsAgency.Infra.Data.EFCore.Tests.Integration/NewsAgency.Infra.Data.EFCore.Tests.Integration.csproj" Id="32612ead-beea-49d5-b82a-d750449bcb3d" />
   </Folder>
-  <Folder Name="/tests/04-EndPoints/" />
+  <Folder Name="/tests/04-EndPoints/">
+    <Project Path="tests/04-EndPoints/NewsAgency.EndPoints.WebApi.Tests.Unit/NewsAgency.EndPoints.WebApi.Tests.Unit.csproj" Id="4a1c3f81-6147-48a3-9da6-22d63daab115" />
+  </Folder>
 </Solution>

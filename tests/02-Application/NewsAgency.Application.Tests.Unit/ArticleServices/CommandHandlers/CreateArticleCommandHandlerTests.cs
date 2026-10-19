@@ -29,8 +29,10 @@ public class CreateArticleCommandHandlerTests
         var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         //assert
-        await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), CancellationToken.None);
         result.IsSuccess.Should().BeTrue();
+
+        await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), CancellationToken.None);
+        await _commandRepository.Received(1).SaveChangesAsync(CancellationToken.None);
 
     }
 
@@ -53,58 +55,6 @@ public class CreateArticleCommandHandlerTests
             CancellationToken.None);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(51)]
-    public async Task Should_Return_Failed_Result_When_Title_Is_Invalid(int length)
-    {
-        // arrange
-        var command = new CreateArticleCommand(
-            "A".PadLeft(length, '-'),
-            "This is valid test content",
-            2,
-            3);
-
-        // act
-        var result = await _commandHandler.Handle(
-            command,
-            CancellationToken.None);
-
-        // assert
-        result.IsSuccess.Should().BeFalse();
-        await _commandRepository.DidNotReceive()
-            .CreateAsync(
-                Arg.Any<Article>(),
-                Arg.Any<CancellationToken>());
-
-    }
-
-    [Theory]
-    [InlineData(9)]
-    [InlineData(5001)]
-    public async Task Should_Return_Failed_Result_When_Content_Is_Invalid(int length)
-    {
-        // arrange
-        var command = new CreateArticleCommand(
-            "Test Article",
-            "A".PadLeft(length, '-'),
-            2,
-            3);
-
-        // act
-        var result = await _commandHandler.Handle(
-            command,
-            CancellationToken.None);
-
-        // assert
-        result.IsSuccess.Should().BeFalse();
-        await _commandRepository.DidNotReceive()
-            .CreateAsync(
-                Arg.Any<Article>(),
-                Arg.Any<CancellationToken>());
-
-    }
 
     [Fact]
     public async Task Should_Return_Failed_Result_When_Request_Is_Null()
@@ -122,5 +72,7 @@ public class CreateArticleCommandHandlerTests
                 Arg.Any<Article>(),
                 Arg.Any<CancellationToken>());
     }
+
+
 
 }

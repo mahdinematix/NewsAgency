@@ -9,4 +9,3 @@ public record CreateArticleCommand(
     long AuthorId,
     long CategoryId)
     : IRequest<OperationResult>;
-

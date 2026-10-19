@@ -30,6 +30,7 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand,
 
             var article = new Article(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
             await _commandRepository.CreateAsync(article, cancellationToken);
+            await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();
         }
         catch (InvalidValueObjectStateException ex)
@@ -39,4 +40,5 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand,
     }
 
 }
+
 

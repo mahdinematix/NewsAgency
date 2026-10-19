@@ -19,10 +19,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application.Contracts\NewsAgency.Application.Contracts.csproj" />
     <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application\NewsAgency.Application.csproj" />
+    <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain.Tests.Unit\NewsAgency.Domain.Tests.Unit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ArticleServices\QueryHandlers\" />
   </ItemGroup>
 
 </Project>
