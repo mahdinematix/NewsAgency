@@ -29,7 +29,7 @@ public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , Op
                 return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
             }
 
-            var article = await _queryRepository.GetByAsync(request.Id);
+            var article = await _queryRepository.GetByAsync(request.Id, CancellationToken.None);
 
             if (article == null)
             {

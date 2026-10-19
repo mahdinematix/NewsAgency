@@ -14,21 +14,21 @@ public class ArticleQueryRepository : IArticleQueryRepository
         _context = context;
     }
 
-    public async Task<List<Article>> GetAllAsync()
+    public async Task<List<Article>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _context.Articles.ToListAsync();
+        return await _context.Articles.ToListAsync(cancellationToken);
     }
 
-    public async Task<Article> GetByAsync(long id)
+    public async Task<Article> GetByAsync(long id, CancellationToken cancellationToken)
     {
-        return await _context.Articles.FindAsync(id);
+        return await _context.Articles.FindAsync(id, cancellationToken);
     }
 
-    public async Task<Article> GetByAsync(string title)
+    public async Task<Article> GetByAsync(string title, CancellationToken cancellationToken)
     {
         var articleTitle = ArticleTitle.FromString(title);
 
         return await _context.Articles
-            .FirstOrDefaultAsync(x => x.Title == articleTitle);
+            .FirstOrDefaultAsync(x => x.Title == articleTitle, cancellationToken);
     }
 }

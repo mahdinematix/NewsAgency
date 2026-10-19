@@ -30,7 +30,7 @@ public class EditArticleCommandHandlerTests
         //arrange
         var article = _builder.Build();
         var command = new EditArticleCommand(article.Id, "Title Test edited", "Content Test edited", 1, 1);
-        _queryRepository.GetByAsync(command.Id).Returns(article);
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).Returns(article);
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
@@ -67,7 +67,7 @@ public class EditArticleCommandHandlerTests
         //arrange
         var article = _builder.Build();
         var command = new EditArticleCommand(55557, "Title Test edited", "Content Test edited", 1, 1);
-        _queryRepository.GetByAsync(command.Id).ReturnsNull();
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).ReturnsNull();
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
@@ -85,7 +85,7 @@ public class EditArticleCommandHandlerTests
         var article = _builder.Build();
         article.Publish();
         var command = new EditArticleCommand(article.Id, "Title Test edited", "Content Test edited", 1, 1);
-        _queryRepository.GetByAsync(command.Id).Returns(article);
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).Returns(article);
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
@@ -104,7 +104,49 @@ public class EditArticleCommandHandlerTests
         article.Publish();
         article.Archive();
         var command = new EditArticleCommand(article.Id, "Title Test edited", "Content Test edited", 1, 1);
-        _queryRepository.GetByAsync(command.Id).Returns(article);
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).Returns(article);
+
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(51)]
+    public async Task Should_Return_Failed_Result_When_Title_Is_Invalid(int length)
+    {
+        //arrange
+        var article = _builder.Build();
+        var invalidTitle = "A".PadLeft(length, '-');
+        var command = new EditArticleCommand(article.Id, invalidTitle, "Content Test edited", 1, 1);
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).Returns(article);
+
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(9)]
+    [InlineData(5001)]
+    public async Task Should_Return_Failed_Result_When_Content_Is_Invalid(int length)
+    {
+        //arrange
+        var article = _builder.Build();
+        var invalidContent = "A".PadLeft(length, '-');
+        var command = new EditArticleCommand(article.Id, "Title Test edited", invalidContent , 1, 1);
+        _queryRepository.GetByAsync(command.Id, Arg.Any<CancellationToken>()).Returns(article);
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);

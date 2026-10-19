@@ -34,7 +34,7 @@ public class ArticleCommandRepositoryTests
         var id = await _commandRepository.CreateAsync(article, CancellationToken.None);
 
         // Assert
-        var actual = await _queryRepository.GetByAsync(id);
+        var actual = await _queryRepository.GetByAsync(id, CancellationToken.None);
         actual.Should().Be(article);
     }
 
@@ -68,7 +68,7 @@ public class ArticleCommandRepositoryTests
         await _commandRepository.Delete(id, CancellationToken.None);
 
         //assert
-        var expected = await _queryRepository.GetByAsync(id);
+        var expected = await _queryRepository.GetByAsync(id, CancellationToken.None);
         expected.Should().BeNull();
     }
 }

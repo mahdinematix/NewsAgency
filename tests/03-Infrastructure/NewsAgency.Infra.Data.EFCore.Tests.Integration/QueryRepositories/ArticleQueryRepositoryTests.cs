@@ -24,7 +24,7 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
     public async Task Should_Return_List_Of_Articles()
     {
         //act
-        var articles = await _queryRepository.GetAllAsync();
+        var articles = await _queryRepository.GetAllAsync(CancellationToken.None);
 
         //assert
         articles.Should().HaveCountGreaterThanOrEqualTo(0);
@@ -39,7 +39,7 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
         await _commandRepository.CreateAsync(article, CancellationToken.None);
 
         //act
-        var actual = await _queryRepository.GetByAsync(article.Id);
+        var actual = await _queryRepository.GetByAsync(article.Id, CancellationToken.None);
 
         //assert
         actual.Should().Be(article);
@@ -55,7 +55,7 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
         await _commandRepository.CreateAsync(article, CancellationToken.None);
 
         //act
-        var actual = await _queryRepository.GetByAsync(article.Title.Value);
+        var actual = await _queryRepository.GetByAsync(article.Title.Value, CancellationToken.None);
 
         //assert
         actual.Title.Should().Be(title);
