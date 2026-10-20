@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Article.Repositories;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers;
@@ -11,11 +13,13 @@ public class CreateArticleCommandHandlerTests
 {
     private readonly IArticleCommandRepository _commandRepository;
     private readonly CreateArticleCommandHandler _commandHandler;
+    private readonly ArticleTestBuilder _builder;
 
     public CreateArticleCommandHandlerTests()
     {
         _commandRepository = Substitute.For<IArticleCommandRepository>();
         _commandHandler = new CreateArticleCommandHandler(_commandRepository);
+        _builder = new ArticleTestBuilder();
     }
 
     [Fact]
@@ -73,6 +77,43 @@ public class CreateArticleCommandHandlerTests
                 Arg.Any<CancellationToken>());
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(51)]
+    public async Task Should_Return_Failed_Result_When_Title_Is_Invalid(int length)
+    {
+        //arrange
+        var invalidTitle = "A".PadLeft(length, '-');
+        var command = new CreateArticleCommand(invalidTitle, "Content Test", 5, 3);
+
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(9)]
+    [InlineData(5001)]
+    public async Task Should_Return_Failed_Result_When_Content_Is_Invalid(int length)
+    {
+        //arrange
+        var invalidContent = "A".PadLeft(length, '-');
+        var command = new CreateArticleCommand("Article Title Test", invalidContent, 5, 3);
+        
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
 
 
 }

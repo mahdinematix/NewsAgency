@@ -8,4 +8,4 @@ public record CreateArticleCommand(
     string Content,
     long AuthorId,
     long CategoryId)
-    : IRequest<OperationResult>;
+    : IRequest<OperationResult<long>>;

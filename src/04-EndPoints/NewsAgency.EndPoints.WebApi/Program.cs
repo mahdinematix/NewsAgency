@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NewsAgency.Application.ArticleServices.CommandHandlers;
+using NewsAgency.Application.Contracts.Article.Repositories;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Infra.Data.EFCore;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;

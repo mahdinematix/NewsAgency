@@ -1,5 +1,5 @@
-﻿using NewsAgency.Domain.ArticleAgg.Entities;
-using NewsAgency.Domain.ArticleAgg.Repositories;
+﻿using NewsAgency.Application.Contracts.Article.Repositories;
+using NewsAgency.Domain.ArticleAgg.Entities;
 
 namespace NewsAgency.Infra.Data.EFCore.CommandRepositories;
 

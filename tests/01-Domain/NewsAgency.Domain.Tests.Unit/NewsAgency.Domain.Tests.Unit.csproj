@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\01-Domain\NewsAgency.Domain\NewsAgency.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application.Contracts\NewsAgency.Application.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

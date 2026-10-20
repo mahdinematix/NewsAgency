@@ -20,3 +20,24 @@ public class OperationResult
     }
 }
 
+public class OperationResult<TData> : OperationResult
+{
+    public TData? Data { get; private set; }
+
+    public OperationResult<TData> Succeeded(
+        TData data,
+        string message = "Operation successfully done!")
+    {
+        base.Succeeded(message);
+        Data = data;
+        return this;
+    }
+
+    public new OperationResult<TData> Failed(
+        string message = "Operation failed! Try again.")
+    {
+        base.Failed(message);
+        Data = default;
+        return this;
+    }
+}

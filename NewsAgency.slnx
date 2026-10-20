@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/src/" />
+  <Folder Name="/src/00-Utilities/">
+    <Project Path="src/00-Utilities/NewsAgency.Utilities/NewsAgency.Utilities.csproj" Id="31715432-fa1f-4bd0-9d6b-27f9f3e72de0" />
+  </Folder>
   <Folder Name="/src/01-Domain/">
     <Project Path="src/01-Domain/NewsAgency.Domain/NewsAgency.Domain.csproj" />
   </Folder>

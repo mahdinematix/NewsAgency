@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Article.Repositories;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
