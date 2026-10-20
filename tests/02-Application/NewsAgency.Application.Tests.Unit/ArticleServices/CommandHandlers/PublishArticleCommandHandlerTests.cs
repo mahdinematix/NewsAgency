@@ -86,6 +86,7 @@ public class PublishArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        article.Status.Should().Be(ArticleStatus.Rejected);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -105,8 +106,8 @@ public class PublishArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        article.Status.Should().Be(ArticleStatus.Archived);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }
-

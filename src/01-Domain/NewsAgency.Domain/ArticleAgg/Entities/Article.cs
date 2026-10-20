@@ -66,7 +66,6 @@ public class Article : BaseEntity
         if (Status == ArticleStatus.Published || Status == ArticleStatus.Archived)
         {
             throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
-
         }
 
         if (Status == ArticleStatus.Rejected)
