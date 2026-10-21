@@ -21,31 +21,6 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
     }
 
     [Fact]
-    public async Task Should_Return_List_Of_Articles()
-    {
-        //act
-        var articles = await _queryRepository.GetAllAsync(CancellationToken.None);
-
-        //assert
-        articles.Should().HaveCountGreaterThanOrEqualTo(0);
-    }
-
-    [Fact]
-    public async Task Should_Return_An_Article_By_Id()
-    {
-        //arrange
-        using var scope = new TransactionScope(TransactionScopeOption.Required,  TransactionScopeAsyncFlowOption.Enabled);
-        var article = _builder.Build();
-        await _commandRepository.CreateAsync(article, CancellationToken.None);
-
-        //act
-        var actual = await _queryRepository.GetByAsync(article.Id, CancellationToken.None);
-
-        //assert
-        actual.Should().Be(article);
-    }
-
-    [Fact]
     public async Task Should_Return_An_Article_By_Title()
     {
         //arrange
@@ -53,6 +28,8 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
         ArticleTitle title = new("NewTitle");
         var article = _builder.WithTitle(title).Build();
         await _commandRepository.CreateAsync(article, CancellationToken.None);
+        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+
 
         //act
         var actual = await _queryRepository.GetByAsync(article.Title.Value, CancellationToken.None);

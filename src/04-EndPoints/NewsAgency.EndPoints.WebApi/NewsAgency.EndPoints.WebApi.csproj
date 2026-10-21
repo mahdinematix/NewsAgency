@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain\NewsAgency.Domain.csproj" />
     <ProjectReference Include="..\..\02-Application\NewsAgency.Application.Contracts\NewsAgency.Application.Contracts.csproj" />
     <ProjectReference Include="..\..\02-Application\NewsAgency.Application\NewsAgency.Application.csproj" />
+    <ProjectReference Include="..\..\03-Infrastructure\NewsAgency.Infra.Configuration\NewsAgency.Infra.Configuration.csproj" />
     <ProjectReference Include="..\..\03-Infrastructure\NewsAgency.Infra.Data.EFCore\NewsAgency.Infra.Data.EFCore.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Article.Commands;
-using NewsAgency.Application.Contracts.Article.Repositories;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Exceptions;

@@ -5,23 +5,13 @@ using NewsAgency.Domain.ArticleAgg.ValueObjects;
 
 namespace NewsAgency.Infra.Data.EFCore.QueryRepositories;
 
-public class ArticleQueryRepository : IArticleQueryRepository
+public class ArticleQueryRepository : GenericQueryRepository<Article, long>, IArticleQueryRepository
 {
     private readonly NewsAgencyContext _context;
 
-    public ArticleQueryRepository(NewsAgencyContext context)
+    public ArticleQueryRepository(NewsAgencyContext context) : base(context)
     {
         _context = context;
-    }
-
-    public async Task<List<Article>> GetAllAsync(CancellationToken cancellationToken)
-    {
-        return await _context.Articles.ToListAsync(cancellationToken);
-    }
-
-    public async Task<Article> GetByAsync(long id, CancellationToken cancellationToken)
-    {
-        return await _context.Articles.FindAsync(id, cancellationToken);
     }
 
     public async Task<Article> GetByAsync(string title, CancellationToken cancellationToken)

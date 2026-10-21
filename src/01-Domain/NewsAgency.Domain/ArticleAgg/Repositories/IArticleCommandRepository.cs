@@ -1,8 +1,8 @@
-﻿namespace NewsAgency.Application.Contracts.Article.Repositories;
+﻿using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Domain.Common.Repositories;
 
-public interface IArticleCommandRepository
+namespace NewsAgency.Domain.ArticleAgg.Repositories;
+
+public interface IArticleCommandRepository : IGenericCommandRepository<Article, long>
 {
-    Task<long> CreateAsync(Domain.ArticleAgg.Entities.Article command, CancellationToken cancellationToken);
-    Task Delete(long id, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

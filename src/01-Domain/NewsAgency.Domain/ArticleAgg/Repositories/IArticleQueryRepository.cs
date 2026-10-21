@@ -1,10 +1,9 @@
 ﻿using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Domain.Common.Repositories;
 
 namespace NewsAgency.Domain.ArticleAgg.Repositories;
 
-public interface IArticleQueryRepository
+public interface IArticleQueryRepository : IGenericQueryRepository<Article, long>
 {
-    Task<List<Article>> GetAllAsync(CancellationToken cancellationToken);
-    Task<Article> GetByAsync(long id, CancellationToken cancellationToken);
     Task<Article> GetByAsync(string title, CancellationToken cancellationToken);
 }

@@ -6,12 +6,18 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
 {
     public class ChangeAuthorTests
     {
+        private readonly AuthorTestBuilder _builder;
+
+        public ChangeAuthorTests()
+        {
+            _builder = new AuthorTestBuilder();
+        }
         [Fact]
         public void Should_Change_FirstName_When_Data_Is_Valid()
         {
             //arrange
-            var author = AuthorFactory.Create();
-            FirstName newFirstName = new(new string('c', 3));
+            var author = _builder.Build();
+            FirstName newFirstName = new("Mahdi");
 
 
             //act
@@ -24,8 +30,8 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_LastName_When_Data_Is_Valid()
         {
             //arrange
-            var author = AuthorFactory.Create();
-            LastName newLastName = new(new string('c', 4));
+            var author = _builder.Build();
+            LastName newLastName = new("Nemati");
 
             //act
             author.ChangeLastName(newLastName);
@@ -38,8 +44,8 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_Email_When_Data_Is_Valid()
         {
             //arrange
-            var author = AuthorFactory.Create();
-            Email newEmail = new("changeTest@example.com");
+            var author = _builder.Build();
+            Email newEmail = new("MahdiNematix@gmail.com");
 
             //act
             author.ChangeEmail(newEmail);
@@ -52,8 +58,8 @@ namespace NewsAgency.Domain.Tests.Unit.AuthorTests
         public void Should_Change_PhoneNumber_When_Data_Is_Valid()
         {
             //arrange
-            var author = AuthorFactory.Create();
-            PhoneNumber newPhoneNumber = new("00989123456780");
+            var author = _builder.Build();
+            PhoneNumber newPhoneNumber = new("009381980312");
 
             //act
             author.ChangePhoneNumber(newPhoneNumber);

@@ -11,6 +11,7 @@
     <Project Path="src/02-Application/NewsAgency.Application/NewsAgency.Application.csproj" />
   </Folder>
   <Folder Name="/src/03-Infrastructure/">
+    <Project Path="src/03-Infrastructure/NewsAgency.Infra.Configuration/NewsAgency.Infra.Configuration.csproj" Id="1284e478-7442-4901-98db-004ea3653b15" />
     <Project Path="src/03-Infrastructure/NewsAgency.Infra.Data.EFCore/NewsAgency.Infra.Data.EFCore.csproj" Id="7270a8e2-1e7a-45aa-ae21-01e5ba6210d7" />
   </Folder>
   <Folder Name="/src/04-EndPoints/">

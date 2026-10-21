@@ -16,4 +16,8 @@
     <ProjectReference Include="..\NewsAgency.Application.Contracts\NewsAgency.Application.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AuthorServices\QueryHandlers\" />
+  </ItemGroup>
+
 </Project>
