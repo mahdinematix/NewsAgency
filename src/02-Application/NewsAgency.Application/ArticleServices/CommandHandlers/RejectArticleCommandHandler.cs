@@ -21,13 +21,14 @@ public class RejectArticleCommandHandler : IRequestHandler<RejectArticleCommand,
     public async Task<OperationResult> Handle(RejectArticleCommand request, CancellationToken cancellationToken)
     {
         var operation = new OperationResult();
+
+        if (request is null)
+        {
+            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+        }
+
         try
         {
-            if (request is null)
-            {
-                return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
-            }
-
             var article = await _queryRepository.GetByAsync(request.Id, cancellationToken);
 
             if (article is null)

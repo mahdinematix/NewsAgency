@@ -5,5 +5,5 @@ namespace NewsAgency.Domain.ArticleAgg.Repositories;
 
 public interface IArticleQueryRepository : IGenericQueryRepository<Article, long>
 {
-    Task<Article> GetByAsync(string title, CancellationToken cancellationToken);
+    Task<Article?> GetByAsync(string title, CancellationToken cancellationToken);
 }

@@ -14,7 +14,7 @@ public class ArticleQueryRepository : GenericQueryRepository<Article, long>, IAr
         _context = context;
     }
 
-    public async Task<Article> GetByAsync(string title, CancellationToken cancellationToken)
+    public async Task<Article?> GetByAsync(string title, CancellationToken cancellationToken)
     {
         var articleTitle = ArticleTitle.FromString(title);
 

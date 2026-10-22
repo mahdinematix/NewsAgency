@@ -22,13 +22,14 @@ public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , Op
     public async Task<OperationResult> Handle(EditArticleCommand request, CancellationToken cancellationToken)
     {
         var operation = new OperationResult();
+
+        if (request is null)
+        {
+            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+        }
+
         try
         {
-            if (request is null)
-            {
-                return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
-            }
-
             var article = await _queryRepository.GetByAsync(request.Id, cancellationToken);
 
             if (article == null)

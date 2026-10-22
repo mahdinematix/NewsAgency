@@ -21,13 +21,14 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand,
     public async Task<OperationResult<long>> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
     {
         var operation = new OperationResult<long>();
+
+        if (request is null)
+        {
+            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+        }
+
         try
         {
-            if (request is null)
-            {
-                return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
-            }
-
             var article = new Article(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
             await _commandRepository.CreateAsync(article, cancellationToken);
             await _commandRepository.SaveChangesAsync(cancellationToken);

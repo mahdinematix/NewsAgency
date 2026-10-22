@@ -21,13 +21,13 @@ public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, O
     public async Task<OperationResult<long>> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
     {
         var operation = new OperationResult<long>();
+        if (request is null)
+        {
+            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+        }
+
         try
         {
-            if (request is null)
-            {
-                return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
-            }
-
             var author = new Author(new FirstName(request.FirstName), new LastName(request.LastName),
                 new Email(request.Email), new PhoneNumber(request.PhoneNumber));
             await _commandRepository.CreateAsync(author, cancellationToken);
