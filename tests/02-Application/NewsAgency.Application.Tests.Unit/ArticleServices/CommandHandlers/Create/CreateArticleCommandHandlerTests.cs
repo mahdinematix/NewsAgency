@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Linq.Expressions;
+using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
-using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Create;
@@ -11,21 +11,22 @@ namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Crea
 public class CreateArticleCommandHandlerTests
 {
     private readonly IArticleCommandRepository _commandRepository;
+    private readonly IArticleQueryRepository _queryRepository;
+
     private readonly CreateArticleCommandHandler _commandHandler;
-    private readonly ArticleTestBuilder _builder;
 
     public CreateArticleCommandHandlerTests()
     {
         _commandRepository = Substitute.For<IArticleCommandRepository>();
-        _commandHandler = new CreateArticleCommandHandler(_commandRepository);
-        _builder = new ArticleTestBuilder();
+        _queryRepository = Substitute.For<IArticleQueryRepository>();
+        _commandHandler = new CreateArticleCommandHandler(_commandRepository, _queryRepository);
     }
 
     [Fact]
     public async Task Should_Create_And_Return_Success_Result_When_Command_Is_Valid()
     {
         //arrange
-        var command = new CreateArticleCommand("CategoryTitle Test", "Content Test", 5, 3);
+        var command = new CreateArticleCommand("Article Title Test", "Content Test", 5, 3);
 
 
         //act
@@ -43,7 +44,7 @@ public class CreateArticleCommandHandlerTests
     public async Task Should_Pass_Real_Command_Data_To_Repository()
     {
         // arrange
-        var command = new CreateArticleCommand("CategoryTitle Test", "Content Test", 5, 3);
+        var command = new CreateArticleCommand("Article Title Test", "Content Test", 5, 3);
 
         // act
         await _commandHandler.Handle(command, CancellationToken.None);
@@ -104,7 +105,7 @@ public class CreateArticleCommandHandlerTests
         //arrange
         var invalidContent = "A".PadLeft(length, '-');
         var command = new CreateArticleCommand("Article Title Test", invalidContent, 5, 3);
-        
+
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
 
@@ -114,5 +115,32 @@ public class CreateArticleCommandHandlerTests
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Article_To_Create_Title_Exist()
+    {
+        //arrange
+        string sameTitle = "Same Article Title";
+        var command1 = new CreateArticleCommand(sameTitle, "Content Test", 5, 3);
+        var command2 = new CreateArticleCommand(sameTitle, "Content Test", 5, 3);
+        _queryRepository
+            .Exists(
+                Arg.Any<Expression<Func<Article, bool>>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(
+                Task.FromResult(false),
+                Task.FromResult(true));
+
+        //act
+        var result1 = await _commandHandler.Handle(command1, CancellationToken.None);
+        var result2 = await _commandHandler.Handle(command2, CancellationToken.None);
+
+
+        //assert
+        result1.IsSuccess.Should().BeTrue();
+        result2.IsSuccess.Should().BeFalse();
+        await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), Arg.Any<CancellationToken>());
+        await _commandRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+
+    }
 
 }

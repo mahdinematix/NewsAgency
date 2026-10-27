@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NewsAgency.Domain.Common;
+using System.Linq.Expressions;
 
 namespace NewsAgency.Infra.Data.EFCore.QueryRepositories;
 
@@ -24,5 +25,10 @@ public class GenericQueryRepository<TEntity, TKey>
         CancellationToken cancellationToken)
     {
         return await Context.Set<TEntity>().FindAsync(id, cancellationToken);
+    }
+
+    public async Task<bool> Exists(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+    {
+        return await Context.Set<TEntity>().AnyAsync(expression, cancellationToken);
     }
 }

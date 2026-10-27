@@ -12,10 +12,12 @@ namespace NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand, OperationResult<long>>
 {
     private readonly IArticleCommandRepository _commandRepository;
+    private readonly IArticleQueryRepository _queryRepository;
 
-    public CreateArticleCommandHandler(IArticleCommandRepository commandRepository)
+    public CreateArticleCommandHandler(IArticleCommandRepository commandRepository, IArticleQueryRepository queryRepository)
     {
         _commandRepository = commandRepository;
+        _queryRepository = queryRepository;
     }
 
     public async Task<OperationResult<long>> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
@@ -29,6 +31,10 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand,
 
         try
         {
+            if (await _queryRepository.Exists(x => x.Title.Value == request.Title, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
             var article = new Article(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
             await _commandRepository.CreateAsync(article, cancellationToken);
             await _commandRepository.SaveChangesAsync(cancellationToken);

@@ -1,10 +1,13 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Edit;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using System.Linq.Expressions;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Edit;
 
@@ -156,5 +159,28 @@ public class EditArticleCommandHandlerTests
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Article_Title_To_Edit_Exist()
+    {
+        //arrange
+        string sameTitle = "Same Article Title";
+        var article = _builder.WithTitle(new ArticleTitle(sameTitle)).Build();
+        var command = new EditArticleCommand(article.Id, sameTitle, "Content Test", 5, 3);
+        _queryRepository
+            .Exists(
+                Arg.Any<Expression<Func<Article, bool>>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(
+                Task.FromResult(false),
+                Task.FromResult(true));
 
+        //act
+        var result1 = await _commandHandler.Handle(command, CancellationToken.None);
+
+
+        //assert
+        result1.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
+
+    }
 }

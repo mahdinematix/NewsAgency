@@ -25,7 +25,7 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
     {
         //arrange
         using var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
-        ArticleTitle title = new("NewTitle");
+        ArticleTitle title = new("New Title");
         var article = _builder.WithTitle(title).Build();
         await _commandRepository.CreateAsync(article, CancellationToken.None);
         await _commandRepository.SaveChangesAsync(CancellationToken.None);

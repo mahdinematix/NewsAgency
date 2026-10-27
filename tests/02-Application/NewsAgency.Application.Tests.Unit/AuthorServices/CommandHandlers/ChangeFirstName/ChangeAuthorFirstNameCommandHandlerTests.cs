@@ -1,10 +1,13 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangeFirstName;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Factories;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.ChangeFirstName;
 

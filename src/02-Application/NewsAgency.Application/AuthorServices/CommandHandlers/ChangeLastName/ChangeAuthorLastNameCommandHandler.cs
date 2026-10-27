@@ -24,7 +24,7 @@ public class ChangeAuthorLastNameCommandHandler : IRequestHandler<ChangeAuthorLa
         var operation = new OperationResult();
         if (request is null)
         {
-            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+            return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
         }
         try
         {
@@ -32,7 +32,7 @@ public class ChangeAuthorLastNameCommandHandler : IRequestHandler<ChangeAuthorLa
 
             if (author is null)
             {
-                return operation.Failed(ApplicationMessages.RecordNotFound);
+                return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
             author.ChangeLastName(new LastName(request.LastName));
@@ -41,7 +41,7 @@ public class ChangeAuthorLastNameCommandHandler : IRequestHandler<ChangeAuthorLa
         }
         catch (InvalidValueObjectStateException ex)
         {
-            return operation.Failed(ex.Message);
+            return operation.Failed(OperationErrorCode.Validation, ex.Message);
         }
     }
 }

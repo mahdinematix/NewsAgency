@@ -21,14 +21,14 @@ public class GetAuthorByFirstNameQueryHandler : IRequestHandler<GetAuthorByFirst
 
         if (request is null)
         {
-            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+            return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
         }
 
         var author = await _queryRepository.GetByFirstNameAsync(request.FirstName, cancellationToken);
 
         if (author is null)
         {
-            return operation.Failed(ApplicationMessages.RecordNotFound);
+            return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
         }
 
         return operation.Succeeded(new AuthorViewModel

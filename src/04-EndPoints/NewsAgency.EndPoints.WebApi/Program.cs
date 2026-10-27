@@ -1,4 +1,3 @@
-using NewsAgency.EndPoints.WebApi.Exceptions;
 using NewsAgency.Infra.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +8,6 @@ var connectionString = configuration.GetConnectionString("NewsAgencyDb");
 
 services.WireUp(connectionString);
 
-services.AddExceptionHandler<ValidationExceptionHandler>();
 services.AddProblemDetails();
 
 services.AddControllers();

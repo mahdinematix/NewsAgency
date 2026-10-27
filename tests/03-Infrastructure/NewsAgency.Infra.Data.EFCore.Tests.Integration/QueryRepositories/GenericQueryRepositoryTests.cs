@@ -1,6 +1,7 @@
 ﻿using System.Transactions;
 using FluentAssertions;
 using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;
 using NewsAgency.Infra.Data.EFCore.QueryRepositories;
@@ -34,7 +35,7 @@ public class GenericQueryRepositoryTests
             TransactionScopeOption.Required,
             TransactionScopeAsyncFlowOption.Enabled);
 
-        var article = _builder.Build();
+        var article = _builder.WithTitle(new ArticleTitle("New Title")).Build();
 
         await _commandRepository.CreateAsync(
             article,
@@ -95,5 +96,44 @@ public class GenericQueryRepositoryTests
 
         // Assert
         actual.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Should_Return_True_When_Entity_Exist()
+    {
+        // Arrange
+        using var scope = new TransactionScope(
+            TransactionScopeOption.Required,
+            TransactionScopeAsyncFlowOption.Enabled);
+
+        var article = _builder.Build();
+
+        await _commandRepository.CreateAsync(
+            article,
+            CancellationToken.None);
+        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+
+
+        // Act
+        var isExists = await _queryRepository.Exists(x=>x.Title == article.Title, CancellationToken.None);
+
+        // Assert
+        isExists.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_Return_False_When_Entity_Does_Not_Exist()
+    {
+        // Arrange
+        using var scope = new TransactionScope(
+            TransactionScopeOption.Required,
+            TransactionScopeAsyncFlowOption.Enabled);
+        var article = _builder.Build();
+        
+        // Act
+        var isExists = await _queryRepository.Exists(x => x.Title == article.Title, CancellationToken.None);
+
+        // Assert
+        isExists.Should().BeFalse();
     }
 }

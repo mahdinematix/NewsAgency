@@ -36,6 +36,11 @@ public class ChangeAuthorEmailCommandHandler : IRequestHandler<ChangeAuthorEmail
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
+            if (await _queryRepository.Exists(x=>x.Email.Value == request.Email && x.Id != request.Id, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
+
             author.ChangeEmail(new Email(request.Email));
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();

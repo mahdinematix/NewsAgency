@@ -1,10 +1,15 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangeEmail;
+using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Factories;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using System.Linq.Expressions;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.ChangeEmail;
 
@@ -99,5 +104,30 @@ public class ChangeAuthorEmailCommandHandlerTests
         result.IsSuccess.Should().BeFalse();
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Email_Of_Author_To_Change_Exist()
+    {
+        //arrange
+        string sameEmail = "SameEmail@test.test";
+        var article = _builder.WithEmail(new Email(sameEmail)).Build();
+        var command = new ChangeAuthorEmailCommand(
+            article.Id, sameEmail);
+        _queryRepository
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(
+                Task.FromResult(false),
+                Task.FromResult(true));
+
+        //act
+        var result1 = await _commandHandler.Handle(command, CancellationToken.None);
+
+
+        //assert
+        result1.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -1,10 +1,13 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangePhoneNumber;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Factories;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.ChangePhoneNumber;
 
@@ -114,5 +117,30 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
         result.IsSuccess.Should().BeFalse();
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_PhoneNumber_Of_Author_To_Change_Exist()
+    {
+        //arrange
+        string samePhoneNumber = "00989388899665";
+        var article = _builder.WithPhoneNumber(new PhoneNumber(samePhoneNumber)).Build();
+        var command = new ChangeAuthorPhoneNumberCommand(
+            article.Id, samePhoneNumber);
+        _queryRepository
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(
+                Task.FromResult(false),
+                Task.FromResult(true));
+
+        //act
+        var result1 = await _commandHandler.Handle(command, CancellationToken.None);
+
+
+        //assert
+        result1.IsSuccess.Should().BeFalse();
+        await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

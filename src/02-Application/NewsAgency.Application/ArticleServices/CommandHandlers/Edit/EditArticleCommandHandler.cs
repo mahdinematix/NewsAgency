@@ -36,6 +36,10 @@ public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , Op
             {
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
+            if (await _queryRepository.Exists(x => x.Title.Value == request.Title && x.Id == request.Id, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
 
             article.Edit(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
             await _commandRepository.SaveChangesAsync(cancellationToken);

@@ -24,7 +24,7 @@ public class ChangeAuthorPhoneNumberCommandHandler : IRequestHandler<ChangeAutho
         var operation = new OperationResult();
         if (request is null)
         {
-            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+            return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
         }
         try
         {
@@ -32,7 +32,12 @@ public class ChangeAuthorPhoneNumberCommandHandler : IRequestHandler<ChangeAutho
 
             if (author is null)
             {
-                return operation.Failed(ApplicationMessages.RecordNotFound);
+                return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
+            }
+
+            if (await _queryRepository.Exists(x => x.PhoneNumber.Value == request.PhoneNumber && x.Id != request.Id, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }
 
             author.ChangePhoneNumber(new PhoneNumber(request.PhoneNumber));
@@ -41,7 +46,7 @@ public class ChangeAuthorPhoneNumberCommandHandler : IRequestHandler<ChangeAutho
         }
         catch (InvalidValueObjectStateException ex)
         {
-            return operation.Failed(ex.Message);
+            return operation.Failed(OperationErrorCode.Validation, ex.Message);
         }
     }
 }

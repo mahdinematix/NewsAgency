@@ -12,10 +12,12 @@ namespace NewsAgency.Application.AuthorServices.CommandHandlers.Create;
 public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, OperationResult<long>>
 {
     private readonly IAuthorCommandRepository _commandRepository;
+    private readonly IAuthorQueryRepository _queryRepository;
 
-    public CreateAuthorCommandHandler(IAuthorCommandRepository commandRepository)
+    public CreateAuthorCommandHandler(IAuthorCommandRepository commandRepository, IAuthorQueryRepository queryRepository)
     {
         _commandRepository = commandRepository;
+        _queryRepository = queryRepository;
     }
 
     public async Task<OperationResult<long>> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
@@ -23,11 +25,15 @@ public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, O
         var operation = new OperationResult<long>();
         if (request is null)
         {
-            return operation.Failed(ApplicationMessages.ValueMustNotBeNull);
+            return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
         }
 
         try
         {
+            if (await _queryRepository.Exists(x => x.Email.Value == request.Email || x.PhoneNumber.Value == request.PhoneNumber, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
             var author = new Author(new FirstName(request.FirstName), new LastName(request.LastName),
                 new Email(request.Email), new PhoneNumber(request.PhoneNumber));
             await _commandRepository.CreateAsync(author, cancellationToken);
@@ -36,7 +42,7 @@ public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, O
         }
         catch (InvalidValueObjectStateException ex)
         {
-            return operation.Failed(ex.Message);
+            return operation.Failed(OperationErrorCode.Validation, ex.Message);
         }
     }
 }
