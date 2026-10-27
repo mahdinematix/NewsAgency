@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageReference Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 
@@ -17,7 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AuthorServices\QueryHandlers\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetByLastName\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetByEmail\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetByPhoneNumber\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetAll\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetById\" />
   </ItemGroup>
 
 </Project>

@@ -26,4 +26,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AuthorServices\QueryHandlers\GetByEmail\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetByLastName\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetByPhoneNumber\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetAll\" />
+    <Folder Include="AuthorServices\QueryHandlers\GetById\" />
+  </ItemGroup>
+
 </Project>

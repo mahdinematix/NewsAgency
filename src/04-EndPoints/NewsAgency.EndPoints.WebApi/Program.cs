@@ -1,3 +1,4 @@
+using NewsAgency.EndPoints.WebApi.Exceptions;
 using NewsAgency.Infra.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,9 @@ var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("NewsAgencyDb");
 
 services.WireUp(connectionString);
+
+services.AddExceptionHandler<ValidationExceptionHandler>();
+services.AddProblemDetails();
 
 services.AddControllers();
 
@@ -19,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.MapSwagger();
     app.MapSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

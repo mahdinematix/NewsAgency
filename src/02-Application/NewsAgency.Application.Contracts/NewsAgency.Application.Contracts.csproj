@@ -14,8 +14,4 @@
     <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain\NewsAgency.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Author\Queries\" />
-  </ItemGroup>
-
 </Project>

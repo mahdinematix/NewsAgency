@@ -24,12 +24,18 @@ public class GenericOperationResultTests
     {
         // Arrange
         var operation = new OperationResult<long>();
-        operation.Succeeded(123);
+        long articleId = 123;
+        var errorCode = OperationErrorCode.NotFound;
+
+        operation.Succeeded(articleId, "Article created.");
 
         // Act
-        operation.Failed("Article creation failed.");
+        operation.Failed(
+            errorCode,
+            "Article creation failed.");
 
         // Assert
-        operation.Data.Should().Be(default(long));
+        operation.IsSuccess.Should().BeFalse();
+        operation.Data.Should().Be(default);
     }
 }

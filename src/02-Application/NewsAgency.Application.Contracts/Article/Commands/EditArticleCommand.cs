@@ -1,6 +1,5 @@
-﻿using MediatR;
-using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Article.Commands;
 
-public record EditArticleCommand(long Id, string Title, string Content, long AuthorId, long CategoryId) : IRequest<OperationResult>;
+public record EditArticleCommand(long Id, string Title, string Content, long AuthorId, long CategoryId) : ICommand<OperationResult>;

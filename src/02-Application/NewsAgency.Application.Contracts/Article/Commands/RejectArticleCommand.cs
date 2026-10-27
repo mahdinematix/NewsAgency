@@ -1,6 +1,5 @@
-﻿using MediatR;
-using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Article.Commands;
 
-public record RejectArticleCommand(long Id) : IRequest<OperationResult>;
+public record RejectArticleCommand(long Id) : ICommand<OperationResult>;

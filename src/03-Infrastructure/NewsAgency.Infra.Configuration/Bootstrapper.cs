@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NewsAgency.Application.ArticleServices.CommandHandlers;
+using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
+using NewsAgency.Application.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Infra.Data.EFCore;
@@ -22,6 +25,10 @@ namespace NewsAgency.Infra.Configuration
             services.AddDbContext<NewsAgencyContext>(x => x.UseSqlServer(connectionString));
 
             services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(CreateArticleCommandHandler).Assembly));
+
+            services.AddValidatorsFromAssembly(typeof(CreateArticleCommandHandler).Assembly);
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
 

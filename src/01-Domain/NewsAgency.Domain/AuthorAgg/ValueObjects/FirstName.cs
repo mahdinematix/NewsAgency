@@ -6,6 +6,8 @@ namespace NewsAgency.Domain.AuthorAgg.ValueObjects;
 public class FirstName : BaseValueObject<FirstName>
 {
     public string Value { get; }
+    public int MaxLength { get; } = 50;
+    public int MinLength { get; } = 2;
     public static FirstName FromString(string value) => new(value);
 
 
@@ -15,11 +17,11 @@ public class FirstName : BaseValueObject<FirstName>
         {
             throw new InvalidValueObjectStateException(Messages.ValueCannotBeNull);
         }
-        if (value.Length < 2)
+        if (value.Length < MinLength)
         {
             throw new InvalidValueObjectStateException(Messages.ValueFailureToObserveMinLength);
         }
-        if (value.Length > 50)
+        if (value.Length > MaxLength)
         {
             throw new InvalidValueObjectStateException(Messages.ValueFailureToObserveMaxLength);
         }
