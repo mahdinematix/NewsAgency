@@ -1,0 +1,42 @@
+﻿using NewsAgency.Application.Common;
+using NewsAgency.Application.Contracts.Author.Queries;
+using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.AuthorAgg.Repositories;
+
+namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetByPhoneNumber;
+
+public class GetAuthorByPhoneNumberQueryHandler
+{
+    private readonly IAuthorQueryRepository _queryRepository;
+
+    public GetAuthorByPhoneNumberQueryHandler(IAuthorQueryRepository queryRepository)
+    {
+        _queryRepository = queryRepository;
+    }
+
+    public async Task<OperationResult<AuthorViewModel>> Handle(GetAuthorByPhoneNumberQuery request, CancellationToken cancellationToken)
+    {
+        var operation = new OperationResult<AuthorViewModel>();
+
+        if (request is null)
+        {
+            return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
+        }
+
+        var author = await _queryRepository.GetByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
+
+        if (author is null)
+        {
+            return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
+        }
+
+        return operation.Succeeded(new AuthorViewModel
+        {
+            FirstName = author.FirstName.Value,
+            Email = author.Email.Value,
+            LastName = author.LastName.Value,
+            Id = author.Id,
+            PhoneNumber = author.PhoneNumber.Value
+        });
+    }
+}

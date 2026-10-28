@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.QueryHandlers.GetByFirstName;
 using NewsAgency.Application.Contracts.Author.Queries;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Factories;
@@ -52,6 +53,7 @@ public class GetAuthorByFirstNameQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         result.Data.Should().BeNull();
         await _queryRepository.DidNotReceive().GetByFirstNameAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
@@ -69,6 +71,7 @@ public class GetAuthorByFirstNameQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         result.Data.Should().BeNull();
         await _queryRepository.Received(1).GetByFirstNameAsync(firstName, Arg.Any<CancellationToken>());
 

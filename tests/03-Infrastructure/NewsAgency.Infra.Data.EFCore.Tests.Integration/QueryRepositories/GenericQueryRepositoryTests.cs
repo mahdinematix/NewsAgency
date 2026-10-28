@@ -35,7 +35,7 @@ public class GenericQueryRepositoryTests
             TransactionScopeOption.Required,
             TransactionScopeAsyncFlowOption.Enabled);
 
-        var article = _builder.WithTitle(new ArticleTitle("New Title")).Build();
+        var article = _builder.Build();
 
         await _commandRepository.CreateAsync(
             article,
@@ -105,8 +105,8 @@ public class GenericQueryRepositoryTests
         using var scope = new TransactionScope(
             TransactionScopeOption.Required,
             TransactionScopeAsyncFlowOption.Enabled);
-
-        var article = _builder.Build();
+        string sameTitle = "same title";
+        var article = _builder.WithTitle(new ArticleTitle(sameTitle)).Build();
 
         await _commandRepository.CreateAsync(
             article,
@@ -115,7 +115,7 @@ public class GenericQueryRepositoryTests
 
 
         // Act
-        var isExists = await _queryRepository.Exists(x=>x.Title == article.Title, CancellationToken.None);
+        var isExists = await _queryRepository.Exists(x=>x.Title == new ArticleTitle(sameTitle), CancellationToken.None);
 
         // Assert
         isExists.Should().BeTrue();

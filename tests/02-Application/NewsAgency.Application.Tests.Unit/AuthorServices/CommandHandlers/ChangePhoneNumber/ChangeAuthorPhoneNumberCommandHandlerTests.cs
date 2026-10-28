@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangePhoneNumber;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
@@ -51,6 +52,7 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
         await _queryRepository.DidNotReceive().GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
     }
@@ -71,6 +73,7 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -91,12 +94,13 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task Should_Return_Failed_Result_When_Author_Does_Not_Exist()
+    public async Task Should_Return_Failed_Result_When_Record_Not_Found()
     {
         // Arrange
         const long authorId = 100;
@@ -115,6 +119,7 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -123,24 +128,31 @@ public class ChangeAuthorPhoneNumberCommandHandlerTests
     public async Task Should_Return_Failed_Result_When_PhoneNumber_Of_Author_To_Change_Exist()
     {
         //arrange
+        const long authorId = 200;
         string samePhoneNumber = "00989388899665";
-        var article = _builder.WithPhoneNumber(new PhoneNumber(samePhoneNumber)).Build();
+        var author = _builder.WithPhoneNumber(new PhoneNumber(samePhoneNumber)).Build();
         var command = new ChangeAuthorPhoneNumberCommand(
-            article.Id, samePhoneNumber);
+            authorId, samePhoneNumber);
+        _queryRepository
+            .GetByAsync(authorId, Arg.Any<CancellationToken>())
+            .Returns(author);
         _queryRepository
             .Exists(
                 Arg.Any<Expression<Func<Author, bool>>>(),
                 Arg.Any<CancellationToken>())
-            .Returns(
-                Task.FromResult(false),
-                Task.FromResult(true));
+            .Returns(Task.FromResult(true));
 
         //act
-        var result1 = await _commandHandler.Handle(command, CancellationToken.None);
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
 
         //assert
-        result1.IsSuccess.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Conflict);
+        await _queryRepository.Received(1)
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>());
         await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NSubstitute;
+using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Create;
 
@@ -34,7 +35,6 @@ public class CreateArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeTrue();
-
         await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), CancellationToken.None);
         await _commandRepository.Received(1).SaveChangesAsync(CancellationToken.None);
 
@@ -70,7 +70,7 @@ public class CreateArticleCommandHandlerTests
 
         // assert
         result.IsSuccess.Should().BeFalse();
-
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .CreateAsync(
                 Arg.Any<Article>(),
@@ -92,6 +92,7 @@ public class CreateArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -111,6 +112,7 @@ public class CreateArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -138,8 +140,13 @@ public class CreateArticleCommandHandlerTests
         //assert
         result1.IsSuccess.Should().BeTrue();
         result2.IsSuccess.Should().BeFalse();
+        result2.ErrorCode.Should().Be(OperationErrorCode.Conflict);
         await _commandRepository.Received(1).CreateAsync(Arg.Any<Article>(), Arg.Any<CancellationToken>());
         await _commandRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _queryRepository.Received(2)
+            .Exists(
+                Arg.Any<Expression<Func<Article, bool>>>(),
+                Arg.Any<CancellationToken>());
 
     }
 

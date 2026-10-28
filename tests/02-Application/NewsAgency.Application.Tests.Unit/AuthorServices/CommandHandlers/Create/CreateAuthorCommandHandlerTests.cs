@@ -1,13 +1,14 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.Create;
-using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Author.Commands;
-using NewsAgency.Domain.ArticleAgg.Entities;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Factories;
 using NSubstitute;
 using System.Linq.Expressions;
+using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Domain.AuthorAgg.Entities;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.Create;
 
@@ -74,7 +75,7 @@ public class CreateAuthorCommandHandlerTests
 
         // assert
         result.IsSuccess.Should().BeFalse();
-
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .CreateAsync(
                 Arg.Any<Author>(),
@@ -96,6 +97,7 @@ public class CreateAuthorCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -115,6 +117,7 @@ public class CreateAuthorCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -138,6 +141,7 @@ public class CreateAuthorCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -158,6 +162,7 @@ public class CreateAuthorCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -176,17 +181,18 @@ public class CreateAuthorCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task Should_Return_Failed_Result_When_Author_To_Create_Email_Exist()
+    public async Task Should_Return_Failed_Result_When_Author_To_Create_Title_Exist()
     {
         //arrange
         string sameEmail = "SameEmail@test.test";
-        var command1 = new CreateAuthorCommand("Test First Name", "Test Last Name", sameEmail, "00989388899665");
-        var command2 = new CreateAuthorCommand("Test First Name", "Test Last Name", sameEmail, "00989388899665");
+        var command1 = new CreateAuthorCommand("test firstName", "test lastName", sameEmail,"00989388899665");
+        var command2 = new CreateAuthorCommand("test firstName", "test lastName", sameEmail, "00989388899665");
         _queryRepository
             .Exists(
                 Arg.Any<Expression<Func<Author, bool>>>(),
@@ -203,8 +209,13 @@ public class CreateAuthorCommandHandlerTests
         //assert
         result1.IsSuccess.Should().BeTrue();
         result2.IsSuccess.Should().BeFalse();
+        result2.ErrorCode.Should().Be(OperationErrorCode.Conflict);
         await _commandRepository.Received(1).CreateAsync(Arg.Any<Author>(), Arg.Any<CancellationToken>());
         await _commandRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _queryRepository.Received(2)
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>());
 
     }
 

@@ -34,6 +34,11 @@ public class ChangeAuthorLastNameCommandHandler : IRequestHandler<ChangeAuthorLa
             {
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
+            if (await _queryRepository.Exists(x => x.LastName.Value == request.LastName && x.Id != request.Id, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
+
 
             author.ChangeLastName(new LastName(request.LastName));
             await _commandRepository.SaveChangesAsync(cancellationToken);

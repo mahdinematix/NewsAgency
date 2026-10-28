@@ -35,6 +35,11 @@ public class ChangeAuthorFirstNameCommandHandler : IRequestHandler<ChangeAuthorF
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
+            if (await _queryRepository.Exists(x => x.FirstName.Value == request.FirstName && x.Id != request.Id, cancellationToken))
+            {
+                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+            }
+
             author.ChangeFirstName(new FirstName(request.FirstName));
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();

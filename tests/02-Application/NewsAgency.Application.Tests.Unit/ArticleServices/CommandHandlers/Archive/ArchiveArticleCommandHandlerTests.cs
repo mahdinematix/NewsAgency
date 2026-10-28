@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Archive;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
@@ -53,6 +54,7 @@ public class ArchiveArticleCommandHandlerTests
 
         // assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -69,6 +71,7 @@ public class ArchiveArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -87,6 +90,7 @@ public class ArchiveArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.LogicError);
         article.Status.Should().Be(ArticleStatus.Rejected);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -105,6 +109,7 @@ public class ArchiveArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.LogicError);
         article.Status.Should().Be(ArticleStatus.Draft);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());

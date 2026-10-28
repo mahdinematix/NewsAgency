@@ -42,7 +42,7 @@ public class MoveToDraftArticleCommandHandler : IRequestHandler<MoveToDraftArtic
         }
         catch (DomainStateException ex)
         {
-            return operation.Failed(OperationErrorCode.Validation, ex.Message);
+            return operation.Failed(OperationErrorCode.LogicError, ex.Message);
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Edit;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using System.Linq.Expressions;
-using NewsAgency.Domain.ArticleAgg.ValueObjects;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Edit;
 
@@ -60,6 +61,7 @@ public class EditArticleCommandHandlerTests
 
         // assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -77,6 +79,7 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -95,6 +98,7 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.LogicError);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -114,6 +118,7 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.LogicError);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -135,6 +140,7 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -156,6 +162,7 @@ public class EditArticleCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -164,22 +171,27 @@ public class EditArticleCommandHandlerTests
     {
         //arrange
         string sameTitle = "Same Article Title";
+        var articleId = 200;
         var article = _builder.WithTitle(new ArticleTitle(sameTitle)).Build();
-        var command = new EditArticleCommand(article.Id, sameTitle, "Content Test", 5, 3);
+        var command = new EditArticleCommand(articleId, sameTitle, "Content Test", 5, 3);
+        _queryRepository
+            .GetByAsync(articleId, Arg.Any<CancellationToken>())
+            .Returns(article);
         _queryRepository
             .Exists(
                 Arg.Any<Expression<Func<Article, bool>>>(),
                 Arg.Any<CancellationToken>())
-            .Returns(
-                Task.FromResult(false),
-                Task.FromResult(true));
+            .Returns(Task.FromResult(true));
 
         //act
-        var result1 = await _commandHandler.Handle(command, CancellationToken.None);
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
 
         //assert
-        result1.IsSuccess.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Conflict);
+        await _queryRepository.Received(1).Exists(Arg.Any<Expression<Func<Article, bool>>>(),
+            Arg.Any<CancellationToken>());
         await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
 
     }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.QueryHandlers.GetAll;
 using NewsAgency.Application.Contracts.Article.Queries;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
@@ -77,6 +78,7 @@ public class GetAllArticlesQueryHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         result.Data.Should().BeNull();
         await _queryRepository.Received(1).GetAllAsync(Arg.Any<CancellationToken>());
 

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.QueryHandlers.GetByTitle;
 using NewsAgency.Application.Contracts.Article.Queries;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Utilities.Extensions;
@@ -52,6 +53,7 @@ public class GetArticleByTitleQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         result.Data.Should().BeNull();
         await _queryRepository.DidNotReceive().GetByAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
 
@@ -68,6 +70,7 @@ public class GetArticleByTitleQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         result.Data.Should().BeNull();
         await _queryRepository.Received(1).GetByAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
 

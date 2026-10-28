@@ -1,10 +1,14 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangeLastName;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Factories;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.ChangeLastName;
 
@@ -48,6 +52,7 @@ public class ChangeAuthorLastNameCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
         await _queryRepository.DidNotReceive().GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
     }
@@ -68,12 +73,13 @@ public class ChangeAuthorLastNameCommandHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task Should_Return_Failed_Result_When_Author_Does_Not_Exist()
+    public async Task Should_Return_Failed_Result_When_Record_Not_Found()
     {
         // Arrange
         const long authorId = 100;
@@ -92,7 +98,40 @@ public class ChangeAuthorLastNameCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_LastName_Of_Author_To_Change_Exist()
+    {
+        //arrange
+        const long authorId = 200;
+        string sameLastName = "SameLastName";
+        var author = _builder.WithLastName(new LastName(sameLastName)).Build();
+        var command = new ChangeAuthorLastNameCommand(
+            authorId, sameLastName);
+        _queryRepository
+            .GetByAsync(authorId, Arg.Any<CancellationToken>())
+            .Returns(author);
+        _queryRepository
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+
+        //act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
+
+
+        //assert
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Conflict);
+        await _queryRepository.Received(1)
+            .Exists(
+                Arg.Any<Expression<Func<Author, bool>>>(),
+                Arg.Any<CancellationToken>());
+        await _commandRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NewsAgency.Application.ArticleServices.QueryHandlers.GetById;
 using NewsAgency.Application.Contracts.Article.Queries;
+using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Utilities.Extensions;
@@ -53,6 +54,7 @@ public class GetArticleByIdQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         result.Data.Should().BeNull();
         await _queryRepository.DidNotReceive().GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
 
@@ -71,6 +73,7 @@ public class GetArticleByIdQueryHandlerTests
 
         //assert
         result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         result.Data.Should().BeNull();
         await _queryRepository.Received(1).GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
 
