@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\02-Application\NewsAgency.Application\NewsAgency.Application.csproj" />
     <ProjectReference Include="..\..\..\src\03-Infrastructure\NewsAgency.Infra.Data.EFCore\NewsAgency.Infra.Data.EFCore.csproj" />
     <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain.Tests.Unit\NewsAgency.Domain.Tests.Unit.csproj" />
   </ItemGroup>

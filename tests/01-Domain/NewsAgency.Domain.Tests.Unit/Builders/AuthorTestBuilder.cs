@@ -1,7 +1,7 @@
 ﻿using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
 
-namespace NewsAgency.Domain.Tests.Unit.Factories;
+namespace NewsAgency.Domain.Tests.Unit.Builders;
 
 public class AuthorTestBuilder
 {

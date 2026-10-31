@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
-using NewsAgency.Domain.Exceptions;
 using NewsAgency.Domain.Tests.Unit.Builders;
 
 namespace NewsAgency.Domain.Tests.Unit.CategoryTests;
@@ -26,7 +25,7 @@ public class CreateCategoryTests
         var category = new Category(categoryTitle, parentId);
 
         //assert
-        category.CategoryTitle.Should().Be(categoryTitle);
+        category.Title.Should().Be(categoryTitle);
         category.ParentId.Should().Be(parentId);
         category.Articles.Should().BeEmpty();
         category.Children.Should().BeEmpty();

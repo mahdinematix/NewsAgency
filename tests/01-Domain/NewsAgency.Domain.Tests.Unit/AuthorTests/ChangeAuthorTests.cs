@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 
 namespace NewsAgency.Domain.Tests.Unit.AuthorTests
 {

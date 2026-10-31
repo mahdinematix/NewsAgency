@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
@@ -8,7 +7,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.AuthorServices.CommandHandlers.ChangePhoneNumber;
 
-public class ChangeAuthorPhoneNumberCommandHandler : IRequestHandler<ChangeAuthorPhoneNumberCommand, OperationResult>
+public class ChangeAuthorPhoneNumberCommandHandler : ICommandHandler<ChangeAuthorPhoneNumberCommand, OperationResult>
 {
     private readonly IAuthorCommandRepository _commandRepository;
     private readonly IAuthorQueryRepository _queryRepository;
@@ -35,12 +34,18 @@ public class ChangeAuthorPhoneNumberCommandHandler : IRequestHandler<ChangeAutho
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
-            if (await _queryRepository.Exists(x => x.PhoneNumber.Value == request.PhoneNumber && x.Id != request.Id, cancellationToken))
+            var newPhoneNumber = new PhoneNumber(request.PhoneNumber);
+
+            if (await _queryRepository.Exists(
+                    x => x.PhoneNumber.Value == newPhoneNumber.Value && x.Id != request.Id,
+                    cancellationToken))
             {
-                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+                return operation.Failed(
+                    OperationErrorCode.Conflict,
+                    ApplicationMessages.ValueCannotBeDuplicated);
             }
 
-            author.ChangePhoneNumber(new PhoneNumber(request.PhoneNumber));
+            author.ChangePhoneNumber(newPhoneNumber);
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();
         }

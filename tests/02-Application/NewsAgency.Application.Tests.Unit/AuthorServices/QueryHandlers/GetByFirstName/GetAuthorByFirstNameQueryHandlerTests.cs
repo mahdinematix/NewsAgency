@@ -4,7 +4,7 @@ using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
@@ -9,7 +8,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 
-public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand, OperationResult<long>>
+public class CreateArticleCommandHandler : ICommandHandler<CreateArticleCommand, OperationResult<long>>
 {
     private readonly IArticleCommandRepository _commandRepository;
     private readonly IArticleQueryRepository _queryRepository;

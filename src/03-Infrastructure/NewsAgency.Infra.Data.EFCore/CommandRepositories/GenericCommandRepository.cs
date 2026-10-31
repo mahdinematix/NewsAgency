@@ -22,23 +22,6 @@ public class GenericCommandRepository<TEntity, TKey>
 
     }
 
-    public async Task DeleteAsync(
-        TKey id,
-        CancellationToken cancellationToken)
-    {
-        var entity = await Context.Set<TEntity>()
-            .FindAsync(new object[] { id }, cancellationToken);
-
-        if (entity is null)
-        {
-            return;
-        }
-
-        Context.Set<TEntity>().Remove(entity);
-
-
-    }
-
     public async Task SaveChangesAsync(
         CancellationToken cancellationToken)
     {

@@ -6,7 +6,6 @@ using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Utilities.Extensions;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.QueryHandlers.GetByTitle;
 

@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Linq.Expressions;
+using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NSubstitute;
-using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Create;
 

@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using System.Linq.Expressions;
+using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.ChangeEmail;
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.ChangeEmail;
 

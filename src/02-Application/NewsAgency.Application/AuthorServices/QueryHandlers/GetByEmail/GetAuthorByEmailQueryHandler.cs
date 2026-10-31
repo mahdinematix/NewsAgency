@@ -1,12 +1,11 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetByEmail;
 
-public class GetAuthorByEmailQueryHandler : IRequestHandler<GetAuthorByEmailQuery, OperationResult<AuthorViewModel>>
+public class GetAuthorByEmailQueryHandler : IQueryHandler<GetAuthorByEmailQuery, OperationResult<AuthorViewModel>>
 {
     private readonly IAuthorQueryRepository _queryRepository;
 

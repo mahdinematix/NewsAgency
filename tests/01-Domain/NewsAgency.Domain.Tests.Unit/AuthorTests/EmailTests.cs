@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
 

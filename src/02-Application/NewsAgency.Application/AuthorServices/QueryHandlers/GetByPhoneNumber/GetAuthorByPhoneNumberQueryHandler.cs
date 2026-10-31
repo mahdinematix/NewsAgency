@@ -5,7 +5,7 @@ using NewsAgency.Domain.AuthorAgg.Repositories;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetByPhoneNumber;
 
-public class GetAuthorByPhoneNumberQueryHandler
+public class GetAuthorByPhoneNumberQueryHandler : IQueryHandler<GetAuthorByPhoneNumberQuery, OperationResult<AuthorViewModel>>
 {
     private readonly IAuthorQueryRepository _queryRepository;
 

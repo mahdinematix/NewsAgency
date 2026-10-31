@@ -1,12 +1,11 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetByFirstName;
 
-public class GetAuthorByFirstNameQueryHandler : IRequestHandler<GetAuthorByFirstNameQuery, OperationResult<AuthorViewModel>>
+public class GetAuthorByFirstNameQueryHandler : IQueryHandler<GetAuthorByFirstNameQuery, OperationResult<AuthorViewModel>>
 {
     private readonly IAuthorQueryRepository _queryRepository;
 

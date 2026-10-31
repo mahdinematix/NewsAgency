@@ -1,13 +1,11 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
-using NewsAgency.Application.Contracts.Article.Queries;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetById;
 
-public class GetAuthorByIdQueryHandler : IRequestHandler<GetAuthorByIdQuery, OperationResult<AuthorViewModel>>
+public class GetAuthorByIdQueryHandler : IQueryHandler<GetAuthorByIdQuery, OperationResult<AuthorViewModel>>
 {
     private readonly IAuthorQueryRepository _queryRepository;
 

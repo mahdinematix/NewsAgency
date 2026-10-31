@@ -1,6 +1,4 @@
-﻿using NewsAgency.Domain.AuthorAgg.ValueObjects;
-
-namespace NewsAgency.Application.Contracts.Common;
+﻿namespace NewsAgency.Application.Contracts.Common;
 
 public class AuthorViewModel
 {

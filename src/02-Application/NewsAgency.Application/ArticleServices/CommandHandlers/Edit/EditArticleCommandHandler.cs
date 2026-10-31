@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
@@ -8,7 +7,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Edit;
 
-public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , OperationResult>
+public class EditArticleCommandHandler : ICommandHandler<EditArticleCommand , OperationResult>
 {
     private readonly IArticleCommandRepository _commandRepository;
     private readonly IArticleQueryRepository _queryRepository;
@@ -36,12 +35,15 @@ public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand , Op
             {
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
+
+            var newTitle = new ArticleTitle(request.Title);
+            var newContent = new ArticleContent(request.Content);
             if (await _queryRepository.Exists(x => x.Title.Value == request.Title && x.Id == request.Id, cancellationToken))
             {
                 return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }
 
-            article.Edit(new ArticleTitle(request.Title), new ArticleContent(request.Content), request.AuthorId, request.CategoryId);
+            article.Edit(newTitle, newContent, request.AuthorId, request.CategoryId);
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();
         }

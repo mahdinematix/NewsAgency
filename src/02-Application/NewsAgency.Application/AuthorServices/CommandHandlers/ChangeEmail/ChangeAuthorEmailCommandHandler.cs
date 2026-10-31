@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
@@ -8,7 +7,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.AuthorServices.CommandHandlers.ChangeEmail;
 
-public class ChangeAuthorEmailCommandHandler : IRequestHandler<ChangeAuthorEmailCommand, OperationResult>
+public class ChangeAuthorEmailCommandHandler : ICommandHandler<ChangeAuthorEmailCommand, OperationResult>
 {
     private readonly IAuthorCommandRepository _commandRepository;
     private readonly IAuthorQueryRepository _queryRepository;
@@ -36,12 +35,18 @@ public class ChangeAuthorEmailCommandHandler : IRequestHandler<ChangeAuthorEmail
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
-            if (await _queryRepository.Exists(x=>x.Email.Value == request.Email && x.Id != request.Id, cancellationToken))
+            var newEmail = new Email(request.Email);
+
+            if (await _queryRepository.Exists(
+                    x => x.Email.Value == newEmail.Value && x.Id != request.Id,
+                    cancellationToken))
             {
-                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+                return operation.Failed(
+                    OperationErrorCode.Conflict,
+                    ApplicationMessages.ValueCannotBeDuplicated);
             }
 
-            author.ChangeEmail(new Email(request.Email));
+            author.ChangeEmail(newEmail);
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();
         }

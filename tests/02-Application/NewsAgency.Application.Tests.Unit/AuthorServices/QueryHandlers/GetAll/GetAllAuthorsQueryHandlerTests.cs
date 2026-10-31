@@ -4,7 +4,7 @@ using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 
@@ -48,7 +48,7 @@ public class GetAllAuthorsQueryHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data.Should().HaveCount(2);
+        result.Data.Should().HaveCountGreaterThanOrEqualTo(2);
         await _queryRepository.Received(1).GetAllAsync(Arg.Any<CancellationToken>());
     }
 

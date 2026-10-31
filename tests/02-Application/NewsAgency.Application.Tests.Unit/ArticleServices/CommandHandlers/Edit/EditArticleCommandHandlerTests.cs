@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq.Expressions;
+using FluentAssertions;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Edit;
 using NewsAgency.Application.Contracts.Article.Commands;
 using NewsAgency.Application.Contracts.Common;
@@ -8,7 +9,6 @@ using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using System.Linq.Expressions;
 
 namespace NewsAgency.Application.Tests.Unit.ArticleServices.CommandHandlers.Edit;
 

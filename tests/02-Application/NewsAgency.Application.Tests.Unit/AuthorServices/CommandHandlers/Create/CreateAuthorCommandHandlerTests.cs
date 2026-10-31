@@ -1,14 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Linq.Expressions;
+using FluentAssertions;
 using NewsAgency.Application.AuthorServices.CommandHandlers.Create;
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
-using NewsAgency.Domain.Tests.Unit.Factories;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
-using System.Linq.Expressions;
-using NewsAgency.Application.Contracts.Author.Commands;
-using NewsAgency.Domain.AuthorAgg.Entities;
 
 namespace NewsAgency.Application.Tests.Unit.AuthorServices.CommandHandlers.Create;
 

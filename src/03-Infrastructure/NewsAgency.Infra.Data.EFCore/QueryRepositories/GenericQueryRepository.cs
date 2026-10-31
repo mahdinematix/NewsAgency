@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using NewsAgency.Domain.Common;
-using System.Linq.Expressions;
 
 namespace NewsAgency.Infra.Data.EFCore.QueryRepositories;
 

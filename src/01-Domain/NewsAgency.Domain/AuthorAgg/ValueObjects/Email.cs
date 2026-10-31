@@ -1,7 +1,6 @@
-﻿using NewsAgency.Domain.ArticleAgg.ValueObjects;
+﻿using System.Text.RegularExpressions;
 using NewsAgency.Domain.Common;
 using NewsAgency.Domain.Exceptions;
-using System.Text.RegularExpressions;
 
 namespace NewsAgency.Domain.AuthorAgg.ValueObjects;
 

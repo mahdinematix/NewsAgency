@@ -10,6 +10,6 @@ public class GetAuthorByIdQueryValidator
     {
         RuleFor(query => query.Id)
             .GreaterThan(0)
-            .WithMessage("Article ID must be greater than zero.");
+            .WithMessage("Author Id must be greater than zero.");
     }
 }

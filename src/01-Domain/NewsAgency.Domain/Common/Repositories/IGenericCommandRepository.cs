@@ -7,10 +7,6 @@ public interface IGenericCommandRepository<TEntity, TKey>
         TEntity entity,
         CancellationToken cancellationToken);
 
-    Task DeleteAsync(
-        TKey id,
-        CancellationToken cancellationToken);
-
     Task SaveChangesAsync(
         CancellationToken cancellationToken);
 }

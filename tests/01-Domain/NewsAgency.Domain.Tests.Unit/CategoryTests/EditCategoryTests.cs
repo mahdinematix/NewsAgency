@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
-using NewsAgency.Domain.Exceptions;
 using NewsAgency.Domain.Tests.Unit.Builders;
 
 namespace NewsAgency.Domain.Tests.Unit.CategoryTests;
@@ -26,7 +24,7 @@ public class EditCategoryTests
         category.ChangeTitle(newCategoryTitle);
 
         //assert
-        category.CategoryTitle.Should().Be(newCategoryTitle);
+        category.Title.Should().Be(newCategoryTitle);
     }
 
     [Theory]

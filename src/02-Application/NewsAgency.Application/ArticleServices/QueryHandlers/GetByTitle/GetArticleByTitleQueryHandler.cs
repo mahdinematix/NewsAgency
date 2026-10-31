@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
@@ -7,7 +6,7 @@ using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.QueryHandlers.GetByTitle;
 
-public class GetArticleByTitleQueryHandler : IRequestHandler<GetArticleByTitleQuery, OperationResult<ArticleViewModel>>
+public class GetArticleByTitleQueryHandler : IQueryHandler<GetArticleByTitleQuery, OperationResult<ArticleViewModel>>
 {
     private readonly IArticleQueryRepository _queryRepository;
 

@@ -1,10 +1,10 @@
-﻿using NewsAgency.Domain.AuthorAgg.ValueObjects;
-using NewsAgency.Domain.Tests.Unit.Factories;
+﻿using System.Transactions;
+using FluentAssertions;
+using NewsAgency.Domain.AuthorAgg.ValueObjects;
+using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;
 using NewsAgency.Infra.Data.EFCore.QueryRepositories;
 using NewsAgency.Infra.Data.EFCore.Tests.Integration.ClassFixtures;
-using System.Transactions;
-using FluentAssertions;
 
 namespace NewsAgency.Infra.Data.EFCore.Tests.Integration.QueryRepositories;
 

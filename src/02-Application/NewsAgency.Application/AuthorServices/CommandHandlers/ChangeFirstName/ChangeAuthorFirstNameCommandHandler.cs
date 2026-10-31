@@ -1,5 +1,4 @@
-﻿using MediatR;
-using NewsAgency.Application.Common;
+﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
@@ -8,7 +7,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.AuthorServices.CommandHandlers.ChangeFirstName;
 
-public class ChangeAuthorFirstNameCommandHandler : IRequestHandler<ChangeAuthorFirstNameCommand, OperationResult>
+public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorFirstNameCommand, OperationResult>
 {
     private readonly IAuthorCommandRepository _commandRepository;
     private readonly IAuthorQueryRepository _queryRepository;
@@ -35,12 +34,18 @@ public class ChangeAuthorFirstNameCommandHandler : IRequestHandler<ChangeAuthorF
                 return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
             }
 
-            if (await _queryRepository.Exists(x => x.FirstName.Value == request.FirstName && x.Id != request.Id, cancellationToken))
+            var newFirstName = new FirstName(request.FirstName);
+
+            if (await _queryRepository.Exists(
+                    x => x.FirstName.Value == newFirstName.Value && x.Id != request.Id,
+                    cancellationToken))
             {
-                return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
+                return operation.Failed(
+                    OperationErrorCode.Conflict,
+                    ApplicationMessages.ValueCannotBeDuplicated);
             }
 
-            author.ChangeFirstName(new FirstName(request.FirstName));
+            author.ChangeFirstName(newFirstName);
             await _commandRepository.SaveChangesAsync(cancellationToken);
             return operation.Succeeded();
         }
