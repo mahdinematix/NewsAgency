@@ -31,11 +31,10 @@ public class ValidationBehavior<TRequest, TResponse>
                 context,
                 cancellationToken);
 
-            errors.AddRange(
-                result.Errors.Select(error =>
-                    new ValidationError(
-                        error.PropertyName,
-                        error.ErrorMessage)));
+            errors.AddRange(result.Errors.Select(error =>
+                new ValidationError(
+                    error.PropertyName,
+                    error.ErrorMessage)));
         }
 
         if (errors.Count > 0)

@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;
@@ -10,31 +9,49 @@ namespace NewsAgency.Infra.Data.EFCore.Tests.Integration.QueryRepositories;
 
 public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
 {
-    private readonly ArticleQueryRepository _queryRepository;
-    private readonly ArticleCommandRepository _commandRepository;
+    private readonly RealDatabaseFixture _fixture;
     private readonly ArticleTestBuilder _builder;
+
     public ArticleQueryRepositoryTests(RealDatabaseFixture fixture)
     {
-        _queryRepository = new ArticleQueryRepository(fixture.Context);
-        _commandRepository = new ArticleCommandRepository(fixture.Context);
+        _fixture = fixture;
         _builder = new ArticleTestBuilder();
     }
 
     [Fact]
     public async Task Should_Return_An_Article_By_Title()
     {
-        //arrange
-        using var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
+        // Arrange
+        await using var context = _fixture.CreateContext();
+
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository = new ArticleQueryRepository(context);
+        var commandRepository = new ArticleCommandRepository(context);
+
         ArticleTitle title = new("New Title");
-        var article = _builder.WithTitle(title).Build();
-        await _commandRepository.CreateAsync(article, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
 
+        var article = _builder
+            .WithTitle(title)
+            .Build();
 
-        //act
-        var actual = await _queryRepository.GetByAsync(article.Title.Value, CancellationToken.None);
+        await commandRepository.CreateAsync(
+            article,
+            CancellationToken.None);
 
-        //assert
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
+
+        // Act
+        var actual = await queryRepository.GetByAsync(
+            article.Title.Value,
+            CancellationToken.None);
+
+        // Assert
         actual.Title.Should().Be(title);
+
+        // Teardown
+        await transaction.RollbackAsync();
     }
 }

@@ -7,7 +7,6 @@ using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using System.Runtime.CompilerServices;
 
 namespace NewsAgency.Application.Tests.Unit.CategoryServices.QueryHandlers.GetChildrenByParentId;
 

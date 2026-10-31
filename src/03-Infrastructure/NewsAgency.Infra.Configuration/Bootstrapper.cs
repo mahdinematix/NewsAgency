@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
@@ -24,11 +23,16 @@ namespace NewsAgency.Infra.Configuration
 
             services.AddDbContext<NewsAgencyContext>(x => x.UseSqlServer(connectionString));
 
-            services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(CreateArticleCommandHandler).Assembly));
+            var applicationLayerAssembly = typeof(CreateArticleCommandHandler).Assembly;
 
-            services.AddValidatorsFromAssembly(typeof(CreateArticleCommandHandler).Assembly);
+            services.AddMediatR(x =>
+            {
+                x.RegisterServicesFromAssembly(applicationLayerAssembly);
+                x.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddValidatorsFromAssembly(applicationLayerAssembly);
+
 
             return services;
 

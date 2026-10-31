@@ -5,53 +5,78 @@ using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;
 using NewsAgency.Infra.Data.EFCore.QueryRepositories;
 using NewsAgency.Infra.Data.EFCore.Tests.Integration.ClassFixtures;
-using System.Transactions;
 
 namespace NewsAgency.Infra.Data.EFCore.Tests.Integration.QueryRepositories;
 
-public class CategoryQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
+public class CategoryQueryRepositoryTests
+    : IClassFixture<RealDatabaseFixture>
 {
-    private readonly CategoryQueryRepository _queryRepository;
-    private readonly CategoryCommandRepository _commandRepository;
+    private readonly RealDatabaseFixture _fixture;
     private readonly CategoryTestBuilder _builder;
 
     public CategoryQueryRepositoryTests(RealDatabaseFixture fixture)
     {
-        _queryRepository = new CategoryQueryRepository(fixture.Context);
-        _commandRepository = new CategoryCommandRepository(fixture.Context);
+        _fixture = fixture;
         _builder = new CategoryTestBuilder();
     }
-
 
     [Fact]
     public async Task Should_Return_Category_By_Title()
     {
-        //arrange
-        using var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
+        // Arrange
+        await using var context = _fixture.CreateContext();
+
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
+
         CategoryTitle title = new("New Title");
-        var category = _builder.WithTitle(title).Build();
-        await _commandRepository.CreateAsync(category, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
 
+        var category = _builder
+            .WithTitle(title)
+            .Build();
 
-        //act
-        var actual = await _queryRepository.GetByAsync(category.Title.Value, CancellationToken.None);
+        await commandRepository.CreateAsync(
+            category,
+            CancellationToken.None);
 
-        //assert
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
+
+        // Act
+        var actual = await queryRepository.GetByAsync(
+            category.Title.Value,
+            CancellationToken.None);
+
+        // Assert
         actual.Title.Should().Be(title);
+
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_Null_When_Category_Title_Not_Found()
     {
-        //arrange
-        using var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
+        // Arrange
+        await using var context = _fixture.CreateContext();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
         const string title = "NotFoundTitle";
 
-        //act
-        var actual = await _queryRepository.GetByAsync(title, CancellationToken.None);
+        // Act
+        var actual = await queryRepository.GetByAsync(
+            title,
+            CancellationToken.None);
 
-        //assert
+        // Assert
         actual.Should().BeNull();
     }
 
@@ -59,213 +84,309 @@ public class CategoryQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
     public async Task Should_Return_Children_By_ParentId()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
 
-        var parent = _builder.WithParentId(null).Build();
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
 
-        await _commandRepository.CreateAsync(parent, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
+
+        var parent = _builder
+            .WithParentId(null)
+            .Build();
+
+        await commandRepository.CreateAsync(
+            parent,
+            CancellationToken.None);
+
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
 
         var parentId = parent.Id;
 
-        var child = _builder.WithParentId(parentId).Build();
+        var child = _builder
+            .WithParentId(parentId)
+            .Build();
 
-        await _commandRepository.CreateAsync(child, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+        await commandRepository.CreateAsync(
+            child,
+            CancellationToken.None);
+
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
 
         // Act
-        var actual = await _queryRepository.GetChildrenByAsync(parentId, CancellationToken.None);
+        var actual = await queryRepository.GetChildrenByAsync(
+            parentId,
+            CancellationToken.None);
 
         // Assert
         actual.Should().Contain(category => category.Id == child.Id);
+
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_Parent_By_Child_Id()
     {
-        //arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
-        var parent = _builder.WithParentId(null).Build();
+        // Arrange
+        await using var context = _fixture.CreateContext();
 
-        await _commandRepository.CreateAsync(parent, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
+
+        var parent = _builder
+            .WithParentId(null)
+            .Build();
+
+        await commandRepository.CreateAsync(
+            parent,
+            CancellationToken.None);
+
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
 
         var parentId = parent.Id;
 
-        var child = _builder.WithParentId(parentId).Build();
+        var child = _builder
+            .WithParentId(parentId)
+            .Build();
 
-        await _commandRepository.CreateAsync(child, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+        await commandRepository.CreateAsync(
+            child,
+            CancellationToken.None);
+
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
+
         var childId = child.Id;
 
-        //act
-        var actual = await _queryRepository.GetParentByAsync(childId, CancellationToken.None);
+        // Act
+        var actual = await queryRepository.GetParentByAsync(
+            childId,
+            CancellationToken.None);
 
-        //assert
+        // Assert
         actual.Should().Be(parent);
+
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_Null_When_Category_Has_No_Parent()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
 
-        var category = _builder.WithParentId(null).Build();
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
 
-        await _commandRepository.CreateAsync(category, CancellationToken.None);
-        await _commandRepository.SaveChangesAsync(CancellationToken.None);
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
+
+        var category = _builder
+            .WithParentId(null)
+            .Build();
+
+        await commandRepository.CreateAsync(
+            category,
+            CancellationToken.None);
+
+        await commandRepository.SaveChangesAsync(
+            CancellationToken.None);
 
         // Act
-        var actual = await _queryRepository.GetParentByAsync(category.Id, CancellationToken.None);
+        var actual = await queryRepository.GetParentByAsync(
+            category.Id,
+            CancellationToken.None);
 
         // Assert
         actual.Should().BeNull();
+
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_True_When_Category_Has_An_Active_Child()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
+
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
 
         var parent = new Category(
             new CategoryTitle("Parent Category"));
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             parent,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         var child = new Category(
             new CategoryTitle("Child Category"),
             parent.Id);
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             child,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         // Act
-        var result = await _queryRepository.HasActiveChildrenAsync(
+        var result = await queryRepository.HasActiveChildrenAsync(
             parent.Id,
             CancellationToken.None);
 
         // Assert
         result.Should().BeTrue();
 
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_False_When_Parent_Category_Is_Active()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
+
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
 
         var parent = new Category(
             new CategoryTitle("Parent Category"));
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             parent,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         var child = new Category(
             new CategoryTitle("Child Category"),
             parent.Id);
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             child,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         // Act
-        var result = await _queryRepository.IsParentRemovedAsync(
+        var result = await queryRepository.IsParentRemovedAsync(
             child.ParentId,
             CancellationToken.None);
 
         // Assert
         result.Should().BeFalse();
 
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_True_When_Parent_Category_Is_Removed()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
+
+        await using var transaction =
+            await context.Database.BeginTransactionAsync();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
+
+        var commandRepository =
+            new CategoryCommandRepository(context);
 
         var parent = new Category(
             new CategoryTitle("Parent Category"));
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             parent,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         var child = new Category(
             new CategoryTitle("Child Category"),
             parent.Id);
 
-        await _commandRepository.CreateAsync(
+        await commandRepository.CreateAsync(
             child,
             CancellationToken.None);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         parent.Remove(false);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         child.Remove(false);
 
-        await _commandRepository.SaveChangesAsync(
+        await commandRepository.SaveChangesAsync(
             CancellationToken.None);
 
         // Act
-        var result = await _queryRepository.IsParentRemovedAsync(
+        var result = await queryRepository.IsParentRemovedAsync(
             child.ParentId,
             CancellationToken.None);
 
         // Assert
         result.Should().BeTrue();
 
+        // Teardown
+        await transaction.RollbackAsync();
     }
 
     [Fact]
     public async Task Should_Return_False_When_ParentId_Is_Null()
     {
         // Arrange
-        using var scope = new TransactionScope(
-            TransactionScopeOption.Required,
-            TransactionScopeAsyncFlowOption.Enabled);
+        await using var context = _fixture.CreateContext();
+
+        var queryRepository =
+            new CategoryQueryRepository(context);
 
         // Act
-        var result = await _queryRepository.IsParentRemovedAsync(
+        var result = await queryRepository.IsParentRemovedAsync(
             null,
             CancellationToken.None);
 
