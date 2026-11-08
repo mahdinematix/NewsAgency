@@ -3,6 +3,12 @@
 public class BaseEntity<TId>
 {
     public TId Id { get; protected set; }
+    public DateTime CreationDate { get; private set; }
+
+    public BaseEntity()
+    {
+        CreationDate = DateTime.Now;
+    }
 
     public bool Equals(BaseEntity<TId>? other) => this == other;
 

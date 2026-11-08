@@ -37,7 +37,7 @@ public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorF
             var newFirstName = new FirstName(request.FirstName);
 
             if (await _queryRepository.Exists(
-                    x => x.FirstName.Value == newFirstName.Value && x.Id != request.Id,
+                    x => x.FirstName == newFirstName && x.Id != request.Id,
                     cancellationToken))
             {
                 return operation.Failed(

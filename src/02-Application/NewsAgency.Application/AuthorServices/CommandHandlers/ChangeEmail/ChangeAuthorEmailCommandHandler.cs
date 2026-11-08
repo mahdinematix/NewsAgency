@@ -38,7 +38,7 @@ public class ChangeAuthorEmailCommandHandler : ICommandHandler<ChangeAuthorEmail
             var newEmail = new Email(request.Email);
 
             if (await _queryRepository.Exists(
-                    x => x.Email.Value == newEmail.Value && x.Id != request.Id,
+                    x => x.Email == newEmail && x.Id != request.Id,
                     cancellationToken))
             {
                 return operation.Failed(

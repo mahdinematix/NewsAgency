@@ -1,4 +1,5 @@
 ﻿using NewsAgency.Application.Common;
+using NewsAgency.Application.Contracts.Author.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;

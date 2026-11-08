@@ -11,11 +11,14 @@ public class ArticleQueryRepository : GenericQueryRepository<Article, long>, IAr
     {
     }
 
-    public async Task<Article?> GetByAsync(string title, CancellationToken cancellationToken)
+    public async Task<Article?> GetByTitleAsync(
+        ArticleTitle title,
+        CancellationToken cancellationToken)
     {
-        var articleTitle = ArticleTitle.FromString(title);
-
-        return await Context.Articles
-            .FirstOrDefaultAsync(x => x.Title == articleTitle, cancellationToken);
+        return await Context.Set<Article>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.Title == title,
+                cancellationToken);
     }
 }

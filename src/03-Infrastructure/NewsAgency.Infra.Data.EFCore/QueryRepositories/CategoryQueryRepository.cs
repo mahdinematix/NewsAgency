@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NewsAgency.Domain.CategoryAgg.Entities;
+using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
 
 namespace NewsAgency.Infra.Data.EFCore.QueryRepositories;
 
-public class CategoryQueryRepository : GenericQueryRepository<Category, long>
+public class CategoryQueryRepository : GenericQueryRepository<Category, long>, ICategoryQueryRepository
 {
     public CategoryQueryRepository(NewsAgencyContext context) : base(context)
     {

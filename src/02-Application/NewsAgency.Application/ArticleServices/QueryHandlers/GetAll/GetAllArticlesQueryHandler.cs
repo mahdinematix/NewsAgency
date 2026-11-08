@@ -1,6 +1,8 @@
 ﻿using NewsAgency.Application.Common;
+using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Utilities.Extensions;
 
@@ -27,13 +29,20 @@ public class GetAllArticlesQueryHandler : IQueryHandler<GetAllArticlesQuery, Ope
 
         return operation.Succeeded(articles.Select(x => new ArticleViewModel
         {
+            Id = x.Id,
             Title = x.Title.Value,
             Content = x.Content.Value,
             AuthorId = x.AuthorId,
-            AuthorName = "",
             CategoryId = x.CategoryId,
-            CategoryTitle = "",
-            Status = x.Status.GetEnumDescription()
+            Status = x.Status.GetEnumDescription(),
+            Actions = new ArticleActionsViewModel
+            {
+                CanMoveToDraft = x.CanMoveToDraft,
+                CanArchive = x.CanArchive,
+                CanEdit = x.CanEdit,
+                CanPublish = x.CanPublish,
+                CanReject = x.CanReject
+            }
         }).ToList());
 
     }

@@ -1,7 +1,10 @@
-﻿using NewsAgency.Application.Common;
+﻿using System.Security.Cryptography.X509Certificates;
+using NewsAgency.Application.Common;
+using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.QueryHandlers.GetByTitle;
@@ -24,7 +27,8 @@ public class GetArticleByTitleQueryHandler : IQueryHandler<GetArticleByTitleQuer
             return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
         }
 
-        var article = await _queryRepository.GetByAsync(request.Title, cancellationToken);
+        var title = new ArticleTitle(request.Title);
+        var article = await _queryRepository.GetByTitleAsync(title, cancellationToken);
 
         if (article is null)
         {
@@ -33,13 +37,20 @@ public class GetArticleByTitleQueryHandler : IQueryHandler<GetArticleByTitleQuer
 
         return operation.Succeeded(new ArticleViewModel
         {
+            Id = article.Id,
             Title = article.Title.Value,
             Content = article.Content.Value,
             AuthorId = article.AuthorId,
-            AuthorName = "",
             CategoryId = article.CategoryId,
-            CategoryTitle = "",
-            Status = article.Status.GetEnumDescription()
+            Status = article.Status.GetEnumDescription(),
+            Actions = new ArticleActionsViewModel
+            {
+                CanMoveToDraft = article.CanMoveToDraft,
+                CanArchive = article.CanArchive,
+                CanEdit = article.CanEdit,
+                CanPublish = article.CanPublish,
+                CanReject = article.CanReject
+            }
         });
 
     }

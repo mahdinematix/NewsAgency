@@ -1,5 +1,6 @@
-﻿using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Article.Common;
+using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Article.Commands;
 
-public record PublishArticleCommand(long Id) : ICommand<OperationResult>;
+public record PublishArticleCommand(long Id) : ICommand<OperationResult<ArticleViewModel>>;

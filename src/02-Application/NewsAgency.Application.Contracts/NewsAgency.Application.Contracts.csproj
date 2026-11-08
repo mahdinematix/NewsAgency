@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\00-Utilities\NewsAgency.Utilities\NewsAgency.Utilities.csproj" />
     <ProjectReference Include="..\..\01-Domain\NewsAgency.Domain\NewsAgency.Domain.csproj" />
   </ItemGroup>
 

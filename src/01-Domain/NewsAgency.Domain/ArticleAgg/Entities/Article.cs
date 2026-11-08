@@ -20,12 +20,29 @@ public class Article : BaseEntity
         CategoryId = categoryId;
         Status = ArticleStatus.Draft;
     }
+    public bool CanEdit =>
+        Status == ArticleStatus.Draft ||
+        Status == ArticleStatus.Rejected;
+
+    public bool CanPublish =>
+        Status == ArticleStatus.Draft;
+
+    public bool CanReject =>
+        Status == ArticleStatus.Draft;
+
+    public bool CanArchive =>
+        Status == ArticleStatus.Published;
+
+    public bool CanMoveToDraft =>
+        Status == ArticleStatus.Rejected ||
+        Status == ArticleStatus.Archived;
 
     public void Edit(ArticleTitle title, ArticleContent content, long authorId, long categoryId)
     {
-        if (Status == ArticleStatus.Published || Status == ArticleStatus.Archived)
+        if (!CanEdit)
         {
-            throw new DomainStateException(Messages.OperationCannotDoneFromThisStatus);
+            throw new DomainStateException(
+                Messages.OperationCannotDoneFromThisStatus);
         }
 
         Title = title;
@@ -36,57 +53,62 @@ public class Article : BaseEntity
 
     public void Publish()
     {
-        if (Status == ArticleStatus.Rejected || Status == ArticleStatus.Archived)
-        {
-            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
-
-        }
         if (Status == ArticleStatus.Published)
         {
             return;
         }
+
+        if (!CanPublish)
+        {
+            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
+        }
+        
         Status = ArticleStatus.Published;
     }
 
     public void Archive()
     {
-        if (Status == ArticleStatus.Draft || Status == ArticleStatus.Rejected)
-        {
-            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
-        }
         if (Status == ArticleStatus.Archived)
         {
             return;
         }
+
+        if (!CanArchive)
+        {
+            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
+        }
+        
         Status = ArticleStatus.Archived;
     }
 
     public void Reject()
     {
-        if (Status == ArticleStatus.Published || Status == ArticleStatus.Archived)
-        {
-            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
-        }
-
         if (Status == ArticleStatus.Rejected)
         {
             return;
         }
+
+        if (!CanReject)
+        {
+            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
+        }
+
         Status = ArticleStatus.Rejected;
 
     }
 
     public void MoveToDraft()
     {
-        if (Status == ArticleStatus.Published)
-        {
-            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
-        }
-
         if (Status == ArticleStatus.Draft)
         {
             return;
         }
+
+        if (!CanMoveToDraft)
+        {
+            throw new DomainStateException(Messages.StatusCannotChangeFromThisStateToThatState);
+        }
+
         Status = ArticleStatus.Draft;
     }
 }

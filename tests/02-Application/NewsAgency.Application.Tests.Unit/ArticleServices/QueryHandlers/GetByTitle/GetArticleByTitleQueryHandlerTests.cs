@@ -3,6 +3,7 @@ using NewsAgency.Application.ArticleServices.QueryHandlers.GetByTitle;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NewsAgency.Utilities.Extensions;
 using NSubstitute;
@@ -28,7 +29,7 @@ public class GetArticleByTitleQueryHandlerTests
     {
         // Arrange
         var article = _builder.Build();
-        _queryRepository.GetByAsync(article.Title.Value, Arg.Any<CancellationToken>()).Returns(article);
+        _queryRepository.GetByTitleAsync(article.Title, Arg.Any<CancellationToken>()).Returns(article);
 
         // Act
         var result = await _queryHandler.Handle(new GetArticleByTitleQuery(article.Title.Value), CancellationToken.None);
@@ -40,7 +41,7 @@ public class GetArticleByTitleQueryHandlerTests
         result.Data.Status.Should().Be(article.Status.GetEnumDescription());
         result.Data.AuthorId.Should().Be(article.AuthorId);
         result.Data.CategoryId.Should().Be(article.CategoryId);
-        await _queryRepository.Received(1).GetByAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await _queryRepository.Received(1).GetByTitleAsync(Arg.Any<ArticleTitle>(), Arg.Any<CancellationToken>());
 
     }
 
@@ -54,7 +55,7 @@ public class GetArticleByTitleQueryHandlerTests
         result.IsSuccess.Should().BeFalse();
         result.ErrorCode.Should().Be(OperationErrorCode.Validation);
         result.Data.Should().BeNull();
-        await _queryRepository.DidNotReceive().GetByAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await _queryRepository.DidNotReceive().GetByTitleAsync(Arg.Any<ArticleTitle>(), Arg.Any<CancellationToken>());
 
     }
 
@@ -71,7 +72,7 @@ public class GetArticleByTitleQueryHandlerTests
         result.IsSuccess.Should().BeFalse();
         result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
         result.Data.Should().BeNull();
-        await _queryRepository.Received(1).GetByAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+        await _queryRepository.Received(1).GetByTitleAsync(Arg.Any<ArticleTitle>(), Arg.Any<CancellationToken>());
 
     }
 

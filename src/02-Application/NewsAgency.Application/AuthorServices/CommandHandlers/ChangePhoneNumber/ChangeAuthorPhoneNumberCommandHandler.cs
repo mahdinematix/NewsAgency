@@ -37,7 +37,7 @@ public class ChangeAuthorPhoneNumberCommandHandler : ICommandHandler<ChangeAutho
             var newPhoneNumber = new PhoneNumber(request.PhoneNumber);
 
             if (await _queryRepository.Exists(
-                    x => x.PhoneNumber.Value == newPhoneNumber.Value && x.Id != request.Id,
+                    x => x.PhoneNumber == newPhoneNumber && x.Id != request.Id,
                     cancellationToken))
             {
                 return operation.Failed(

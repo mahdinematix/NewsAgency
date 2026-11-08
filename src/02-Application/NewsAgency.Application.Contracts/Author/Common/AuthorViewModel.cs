@@ -1,4 +1,4 @@
-﻿namespace NewsAgency.Application.Contracts.Common;
+﻿namespace NewsAgency.Application.Contracts.Author.Common;
 
 public class AuthorViewModel
 {

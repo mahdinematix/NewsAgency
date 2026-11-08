@@ -1,4 +1,5 @@
-﻿using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Article.Common;
+using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Article.Queries;
 

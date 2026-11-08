@@ -1,4 +1,5 @@
 ﻿using NewsAgency.Application.Common;
+using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
@@ -33,13 +34,20 @@ public class GetArticleByIdQueryHandler : IQueryHandler<GetArticleByIdQuery, Ope
 
         return operation.Succeeded(new ArticleViewModel
         {
+            Id = article.Id,
             Title = article.Title.Value,
             Content = article.Content.Value,
             AuthorId = article.AuthorId,
-            AuthorName = "",
             CategoryId = article.CategoryId,
-            CategoryTitle = "",
-            Status = article.Status.GetEnumDescription()
+            Status = article.Status.GetEnumDescription(),
+            Actions = new ArticleActionsViewModel
+            {
+                CanEdit = article.CanEdit,
+                CanPublish = article.CanPublish,
+                CanReject = article.CanReject,
+                CanArchive = article.CanArchive,
+                CanMoveToDraft = article.CanMoveToDraft
+            }
         });
 
     }

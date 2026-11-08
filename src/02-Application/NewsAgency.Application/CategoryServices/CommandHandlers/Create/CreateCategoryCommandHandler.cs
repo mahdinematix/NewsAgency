@@ -2,6 +2,7 @@
 using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Category.Commands;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
@@ -30,7 +31,8 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
         try
         {
-            if (await _queryRepository.Exists(x=>x.Title.Value == request.Title, cancellationToken))
+            var title = new CategoryTitle(request.Title);
+            if (await _queryRepository.Exists(x=>x.Title == title, cancellationToken))
             {
                 return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }

@@ -1,12 +1,14 @@
 ﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Article.Commands;
+using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Publish;
 
-public class PublishArticleCommandHandler : ICommandHandler<PublishArticleCommand, OperationResult>
+public class PublishArticleCommandHandler : ICommandHandler<PublishArticleCommand, OperationResult<ArticleViewModel>>
 {
     private readonly IArticleCommandRepository _commandRepository;
     private readonly IArticleQueryRepository _queryRepository;
@@ -17,9 +19,9 @@ public class PublishArticleCommandHandler : ICommandHandler<PublishArticleComman
         _queryRepository = queryRepository;
     }
 
-    public async Task<OperationResult> Handle(PublishArticleCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<ArticleViewModel>> Handle(PublishArticleCommand request, CancellationToken cancellationToken)
     {
-        var operation = new OperationResult();
+        var operation = new OperationResult<ArticleViewModel>();
 
         if (request is null)
         {
@@ -37,7 +39,23 @@ public class PublishArticleCommandHandler : ICommandHandler<PublishArticleComman
 
             article.Publish();
             await _commandRepository.SaveChangesAsync(cancellationToken);
-            return operation.Succeeded();
+            return operation.Succeeded(new ArticleViewModel
+            {
+                Id = article.Id,
+                Title = article.Title.Value,
+                Content = article.Content.Value,
+                AuthorId = article.AuthorId,
+                CategoryId = article.CategoryId,
+                Status = article.Status.GetEnumDescription(),
+                Actions = new ArticleActionsViewModel
+                {
+                    CanMoveToDraft = article.CanMoveToDraft,
+                    CanArchive = article.CanArchive,
+                    CanEdit = article.CanEdit,
+                    CanPublish = article.CanPublish,
+                    CanReject = article.CanReject
+                }
+            });
         }
         catch (DomainStateException ex)
         {

@@ -1,4 +1,4 @@
-﻿namespace NewsAgency.Application.Contracts.Common;
+﻿namespace NewsAgency.Application.Contracts.Article.Common;
 
 public class ArticleViewModel
 {
@@ -6,10 +6,7 @@ public class ArticleViewModel
     public string Title { get; set; }
     public string Content { get; set; }
     public long AuthorId { get; set; }
-    public string AuthorName { get; set; }
     public long CategoryId { get; set; }
-    public string CategoryTitle { get; set; }
     public string Status { get; set; }
-
-
+    public ArticleActionsViewModel Actions { get; set; } = new();
 }

@@ -17,7 +17,7 @@ public class GenericQueryRepository<TEntity, TKey>
     public async Task<List<TEntity>?> GetAllAsync(
         CancellationToken cancellationToken)
     {
-        return await Context.Set<TEntity>().AsNoTracking().ToListAsync(cancellationToken);
+        return await Context.Set<TEntity>().AsNoTracking().OrderByDescending(x=>x.CreationDate).ToListAsync(cancellationToken);
     }
 
     public async Task<TEntity?> GetByAsync(

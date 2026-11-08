@@ -38,7 +38,7 @@ public class ChangeCategoryTitleCommandHandler : IRequestHandler<ChangeCategoryT
 
             var newTitle = new CategoryTitle(request.Title);
 
-            if (await _queryRepository.Exists(x => x.Title.Value == newTitle.Value && x.Id != request.Id, cancellationToken))
+            if (await _queryRepository.Exists(x => x.Title == newTitle && x.Id != request.Id, cancellationToken))
             {
                 return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }

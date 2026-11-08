@@ -29,7 +29,9 @@ public class CreateAuthorCommandHandler : ICommandHandler<CreateAuthorCommand, O
 
         try
         {
-            if (await _queryRepository.Exists(x => x.Email.Value == request.Email || x.PhoneNumber.Value == request.PhoneNumber, cancellationToken))
+            var email = new Email(request.Email);
+            var phoneNumber = new PhoneNumber(request.PhoneNumber);
+            if (await _queryRepository.Exists(x => x.Email == email || x.PhoneNumber == phoneNumber, cancellationToken))
             {
                 return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }

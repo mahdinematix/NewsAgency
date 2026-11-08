@@ -44,8 +44,8 @@ public class ArticleQueryRepositoryTests : IClassFixture<RealDatabaseFixture>
             CancellationToken.None);
 
         // Act
-        var actual = await queryRepository.GetByAsync(
-            article.Title.Value,
+        var actual = await queryRepository.GetByTitleAsync(
+            article.Title,
             CancellationToken.None);
 
         // Assert

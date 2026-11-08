@@ -5,6 +5,7 @@ using NewsAgency.Application.ArticleServices.CommandHandlers.Create;
 using NewsAgency.Application.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Infra.Data.EFCore;
 using NewsAgency.Infra.Data.EFCore.CommandRepositories;
 using NewsAgency.Infra.Data.EFCore.QueryRepositories;
@@ -20,6 +21,8 @@ namespace NewsAgency.Infra.Configuration
 
             services.AddScoped<IAuthorCommandRepository, AuthorCommandRepository>();
             services.AddScoped<IAuthorQueryRepository, AuthorQueryRepository>();
+            services.AddScoped<ICategoryCommandRepository, CategoryCommandRepository>();
+            services.AddScoped<ICategoryQueryRepository, CategoryQueryRepository>();
 
             services.AddDbContext<NewsAgencyContext>(x => x.UseSqlServer(connectionString));
 

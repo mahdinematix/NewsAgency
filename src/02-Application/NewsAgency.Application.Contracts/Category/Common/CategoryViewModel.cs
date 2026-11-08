@@ -1,4 +1,4 @@
-﻿namespace NewsAgency.Application.Contracts.Common;
+﻿namespace NewsAgency.Application.Contracts.Category.Common;
 
 public class CategoryViewModel
 {

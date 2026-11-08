@@ -1,4 +1,5 @@
-﻿using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Article.Common;
+using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Article.Commands;
 
@@ -7,4 +8,4 @@ public record CreateArticleCommand(
     string Content,
     long AuthorId,
     long CategoryId)
-    : ICommand<OperationResult<long>>;
+    : ICommand<OperationResult<ArticleViewModel>>;
