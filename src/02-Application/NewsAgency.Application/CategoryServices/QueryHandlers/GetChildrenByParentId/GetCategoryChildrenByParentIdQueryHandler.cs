@@ -30,13 +30,46 @@ public class GetCategoryChildrenByParentIdQueryHandler : IQueryHandler<GetCatego
         {
             return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
         }
+        var categoryViewModels = new List<CategoryViewModel>();
 
-        return operation.Succeeded(children.Select(x => new CategoryViewModel
+        foreach (var category in children)
         {
-            Id = x.Id,
-            Title = x.Title.Value,
-            IsRemoved = x.IsRemoved,
-            ParentId = x.ParentId
-        }).ToList());
+            var parentIsRemoved = false;
+
+            if (category.ParentId.HasValue)
+            {
+                var parent = await _queryRepository.GetByAsync(
+                    category.ParentId.Value,
+                    cancellationToken);
+
+                if (parent is null)
+                {
+                    return operation.Failed(
+                        OperationErrorCode.NotFound,
+                        ApplicationMessages.RecordNotFound);
+                }
+
+                parentIsRemoved = parent.IsRemoved;
+            }
+
+            var hasActiveChildren = await _queryRepository.HasActiveChildrenAsync(
+                category.Id,
+                cancellationToken);
+
+            categoryViewModels.Add(new CategoryViewModel
+            {
+                Id = category.Id,
+                Title = category.Title.Value,
+                ParentId = category.ParentId,
+                IsRemoved = category.IsRemoved,
+                Actions = new CategoryActionsViewModel
+                {
+                    CanRemove = category.CanRemove(hasActiveChildren),
+                    CanRestore = category.CanRestore(parentIsRemoved)
+                }
+            });
+        }
+
+        return operation.Succeeded(categoryViewModels);
     }
 }

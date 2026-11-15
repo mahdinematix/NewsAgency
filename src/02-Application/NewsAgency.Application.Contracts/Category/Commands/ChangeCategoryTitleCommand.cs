@@ -1,5 +1,6 @@
-﻿using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Category.Common;
+using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Category.Commands;
 
-public record ChangeCategoryTitleCommand(long Id, string Title) : ICommand<OperationResult>;
+public record ChangeCategoryTitleCommand(long Id, string Title) : ICommand<OperationResult<CategoryViewModel>>;

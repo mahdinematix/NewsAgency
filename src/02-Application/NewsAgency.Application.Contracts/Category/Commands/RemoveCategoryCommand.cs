@@ -1,5 +1,6 @@
-﻿using NewsAgency.Application.Contracts.Common;
+﻿using NewsAgency.Application.Contracts.Category.Common;
+using NewsAgency.Application.Contracts.Common;
 
 namespace NewsAgency.Application.Contracts.Category.Commands;
 
-public record RemoveCategoryCommand(long Id) : ICommand<OperationResult>;
+public record RemoveCategoryCommand(long Id) : ICommand<OperationResult<CategoryViewModel>>;

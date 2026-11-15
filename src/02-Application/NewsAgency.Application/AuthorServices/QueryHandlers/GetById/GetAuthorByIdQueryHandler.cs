@@ -3,6 +3,7 @@ using NewsAgency.Application.Contracts.Author.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetById;
 
@@ -37,7 +38,8 @@ public class GetAuthorByIdQueryHandler : IQueryHandler<GetAuthorByIdQuery, Opera
             Email = author.Email.Value,
             FirstName = author.FirstName.Value,
             LastName = author.LastName.Value,
-            PhoneNumber = author.PhoneNumber.Value
+            PhoneNumber = author.PhoneNumber.Value,
+            CreationDate = author.CreationDate.ToFarsi()
         });
 
     }

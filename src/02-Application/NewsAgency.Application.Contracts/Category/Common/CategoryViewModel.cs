@@ -6,4 +6,6 @@ public class CategoryViewModel
     public string Title { get; set; }
     public long? ParentId { get; set; }
     public bool IsRemoved { get; set; }
+    public string CreationDate { get; set; }
+    public CategoryActionsViewModel Actions { get; set; }
 }

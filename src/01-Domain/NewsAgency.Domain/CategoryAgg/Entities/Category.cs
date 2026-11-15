@@ -8,9 +8,13 @@ namespace NewsAgency.Domain.CategoryAgg.Entities;
 public class Category : BaseEntity
 {
     public CategoryTitle Title { get; private set; }
+
     public long? ParentId { get; private set; }
+
     public bool IsRemoved { get; private set; }
+
     public ICollection<Article> Articles { get; private set; }
+
     public ICollection<Category> Children { get; private set; }
 
     public Category(CategoryTitle title, long? parentId = null)
@@ -18,9 +22,16 @@ public class Category : BaseEntity
         Title = title;
         ParentId = parentId;
         IsRemoved = false;
+
         Articles = new List<Article>();
         Children = new List<Category>();
     }
+
+    public bool CanRemove(bool hasActiveChildren) =>
+        !IsRemoved && !hasActiveChildren;
+
+    public bool CanRestore(bool parentIsRemoved) =>
+        IsRemoved && !parentIsRemoved;
 
     public void ChangeTitle(CategoryTitle categoryTitle)
     {
@@ -28,7 +39,7 @@ public class Category : BaseEntity
     }
 
     public void ChangeParent(long? parentId)
-    { 
+    {
         ParentId = parentId;
     }
 
@@ -39,7 +50,7 @@ public class Category : BaseEntity
             return;
         }
 
-        if (hasActiveChildren)
+        if (!CanRemove(hasActiveChildren))
         {
             throw new DomainStateException(
                 "A category cannot be removed while it has active child categories.");
@@ -47,6 +58,7 @@ public class Category : BaseEntity
 
         IsRemoved = true;
     }
+
     public void Restore(bool parentIsRemoved)
     {
         if (!IsRemoved)
@@ -54,7 +66,7 @@ public class Category : BaseEntity
             return;
         }
 
-        if (parentIsRemoved)
+        if (!CanRestore(parentIsRemoved))
         {
             throw new DomainStateException(
                 "A category cannot be restored while its parent category is removed.");
@@ -63,4 +75,3 @@ public class Category : BaseEntity
         IsRemoved = false;
     }
 }
-

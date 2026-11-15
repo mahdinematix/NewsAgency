@@ -8,5 +8,6 @@ public class ArticleViewModel
     public long AuthorId { get; set; }
     public long CategoryId { get; set; }
     public string Status { get; set; }
+    public string CreationDate { get; set; }
     public ArticleActionsViewModel Actions { get; set; } = new();
 }

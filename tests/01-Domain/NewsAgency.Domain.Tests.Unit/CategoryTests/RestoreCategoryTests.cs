@@ -55,5 +55,6 @@ public class RestoreCategoryTests
         // Assert
         act.Should()
             .Throw<DomainStateException>();
+        category.IsRemoved.Should().BeTrue();
     }
 }

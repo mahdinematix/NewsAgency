@@ -2,7 +2,9 @@
 using NewsAgency.Application.CategoryServices.CommandHandlers.Restore;
 using NewsAgency.Application.Contracts.Category.Commands;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
+using NewsAgency.Domain.CategoryAgg.ValueObjects;
 using NewsAgency.Domain.Tests.Unit.Builders;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -32,18 +34,34 @@ public class RestoreCategoryCommandHandlerTests
     public async Task Should_Restore_And_Return_Success_Result_When_Parent_Is_Not_Removed()
     {
         // Arrange
-        var category = _builder.Build();
-        category.Remove(false);
+        const long parentId = 100;
+
+        var category = _builder
+            .WithParentId(parentId)
+            .Build();
+
+        category.Remove(hasActiveChildren: false);
+
+        var parent = new Category(
+            new CategoryTitle("Parent Category"));
 
         var command = new RestoreCategoryCommand(category.Id);
 
         _queryRepository
-            .GetByAsync(category.Id, Arg.Any<CancellationToken>())
+            .GetByAsync(
+                category.Id,
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         _queryRepository
-            .IsParentRemovedAsync(
-                category.ParentId,
+            .GetByAsync(
+                parentId,
+                Arg.Any<CancellationToken>())
+            .Returns(parent);
+
+        _queryRepository
+            .HasActiveChildrenAsync(
+                category.Id,
                 Arg.Any<CancellationToken>())
             .Returns(false);
 
@@ -54,15 +72,19 @@ public class RestoreCategoryCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
+
         category.IsRemoved.Should().BeFalse();
 
+        result.Data.IsRemoved.Should().BeFalse();
+
+        await _queryRepository.Received(2)
+            .GetByAsync(Arg.Any<long>(), CancellationToken.None);
+
         await _queryRepository.Received(1)
-            .IsParentRemovedAsync(
-                category.ParentId,
-                Arg.Any<CancellationToken>());
+            .HasActiveChildrenAsync(category.Id, CancellationToken.None);
 
         await _commandRepository.Received(1)
-            .SaveChangesAsync(Arg.Any<CancellationToken>());
+            .SaveChangesAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -108,16 +130,38 @@ public class RestoreCategoryCommandHandlerTests
     public async Task Should_Return_Failed_Result_When_Parent_Is_Removed()
     {
         // Arrange
-        var child = _builder.Build();
+        const long parentId = 500;
 
-        child.ChangeParent(500);
-        child.Remove(false);
+        var child = _builder
+            .WithParentId(parentId)
+            .Build();
+
+        child.Remove(hasActiveChildren: false);
+
+        var parent = new Category(
+            new CategoryTitle("Parent Category"));
+
+        parent.Remove(hasActiveChildren: false);
 
         var command = new RestoreCategoryCommand(child.Id);
 
-        _queryRepository.GetByAsync(child.Id, Arg.Any<CancellationToken>()).Returns(child);
+        _queryRepository
+            .GetByAsync(
+                child.Id,
+                Arg.Any<CancellationToken>())
+            .Returns(child);
 
-        _queryRepository.IsParentRemovedAsync(500, Arg.Any<CancellationToken>()).Returns(true);
+        _queryRepository
+            .GetByAsync(
+                parentId,
+                Arg.Any<CancellationToken>())
+            .Returns(parent);
+
+        _queryRepository
+            .HasActiveChildrenAsync(
+                child.Id,
+                Arg.Any<CancellationToken>())
+            .Returns(false);
 
         // Act
         var result = await _commandHandler.Handle(
@@ -126,13 +170,13 @@ public class RestoreCategoryCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
+
         result.ErrorCode.Should().Be(OperationErrorCode.Conflict);
+
         child.IsRemoved.Should().BeTrue();
 
-        await _queryRepository.Received(1)
-            .IsParentRemovedAsync(
-                500,
-                Arg.Any<CancellationToken>());
+        await _queryRepository.Received(2)
+            .GetByAsync(Arg.Any<long>(), CancellationToken.None);
 
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -159,5 +203,53 @@ public class RestoreCategoryCommandHandlerTests
         category.IsRemoved.Should().BeFalse();
         await _commandRepository.DidNotReceive()
             .SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+
+    [Fact]
+    public async Task Should_Return_NotFound_When_Parent_Category_Does_Not_Exist()
+    {
+        // Arrange
+        const long categoryId = 100;
+        const long parentId = 200;
+
+        var category = _builder.WithParentId(parentId).Build();
+        category.Remove(hasActiveChildren: false);
+
+        var command = new RestoreCategoryCommand(
+            categoryId);
+
+        _queryRepository
+            .GetByAsync(
+                categoryId,
+                Arg.Any<CancellationToken>())
+            .Returns(category);
+
+        _queryRepository
+            .GetByAsync(
+                parentId,
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
+
+
+        // Act
+        var result = await _commandHandler.Handle(
+            command,
+            CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
+
+        result.Data.Should().BeNull();
+
+        await _queryRepository.Received(2).GetByAsync(
+            Arg.Any<long>(),
+            CancellationToken.None);
+
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(
+                Arg.Any<CancellationToken>());
     }
 }

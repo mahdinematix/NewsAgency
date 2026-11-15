@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Category.Commands;
+using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Common;
-using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
@@ -10,7 +10,7 @@ using NewsAgency.Domain.Exceptions;
 
 namespace NewsAgency.Application.CategoryServices.CommandHandlers.Create;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, OperationResult<long>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, OperationResult<CategoryViewModel>>
 {
     private readonly ICategoryCommandRepository _commandRepository;
     private readonly ICategoryQueryRepository _queryRepository;
@@ -21,9 +21,9 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         _queryRepository = queryRepository;
     }
 
-    public async Task<OperationResult<long>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<CategoryViewModel>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var operation = new OperationResult<long>();
+        var operation = new OperationResult<CategoryViewModel>();
         if (request is null)
         {
             return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
@@ -37,9 +37,40 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
                 return operation.Failed(OperationErrorCode.Conflict, ApplicationMessages.ValueCannotBeDuplicated);
             }
             var category = new Category(new CategoryTitle(request.Title), request.ParentId);
+            var parentIsRemoved = false;
+
+            if (request.ParentId.HasValue)
+            {
+                var parent = await _queryRepository.GetByAsync(
+                    request.ParentId.Value,
+                    cancellationToken);
+
+                if (parent is null)
+                {
+                    return operation.Failed(
+                        OperationErrorCode.NotFound,
+                        ApplicationMessages.RecordNotFound);
+                }
+
+                parentIsRemoved = parent.IsRemoved;
+            }
+            var hasActiveChildren = await _queryRepository.HasActiveChildrenAsync(
+                category.Id,
+                cancellationToken);
             await _commandRepository.CreateAsync(category, cancellationToken);
             await _commandRepository.SaveChangesAsync(cancellationToken);
-            return operation.Succeeded(category.Id);
+            return operation.Succeeded(new CategoryViewModel
+            {
+                Id = category.Id,
+                Title = category.Title.Value,
+                IsRemoved = category.IsRemoved,
+                ParentId = category.ParentId,
+                Actions = new CategoryActionsViewModel
+                {
+                    CanRemove = category.CanRemove(hasActiveChildren),
+                    CanRestore = category.CanRestore(parentIsRemoved)
+                }
+            });
         }
         catch (InvalidValueObjectStateException ex)
         {

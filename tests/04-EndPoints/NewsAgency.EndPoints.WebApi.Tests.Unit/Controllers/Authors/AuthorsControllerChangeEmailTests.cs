@@ -1,0 +1,150 @@
+﻿using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Application.Contracts.Author.Common;
+using NewsAgency.Application.Contracts.Common;
+using NewsAgency.EndPoints.WebApi.Controllers;
+using NewsAgency.EndPoints.WebApi.Models;
+using NewsAgency.EndPoints.WebApi.Models.Authors;
+using NSubstitute;
+
+namespace NewsAgency.EndPoints.WebApi.Tests.Unit.Controllers.Authors;
+
+public class AuthorsControllerChangeEmailTests
+{
+    private readonly ISender _sender;
+    private readonly IUrlHelper _urlHelper;
+    private readonly AuthorsController _controller;
+
+    public AuthorsControllerChangeEmailTests()
+    {
+        _sender = Substitute.For<ISender>();
+        _urlHelper = Substitute.For<IUrlHelper>();
+
+        _urlHelper.Link(
+                Arg.Any<string>(),
+                Arg.Any<object?>())
+            .Returns("/test");
+
+        _controller = new AuthorsController(_sender)
+        {
+            Url = _urlHelper
+        };
+    }
+
+    [Fact]
+    public async Task Should_Return_Success_Result_And_Updated_Author_With_HATEOAS_Links()
+    {
+        // Arrange
+        const long authorId = 10;
+
+        var request = new ChangeAuthorEmailRequest
+        {
+            Email = "updated@test.com"
+        };
+
+        var author = CreateAuthor(authorId);
+
+        var operation = new OperationResult<AuthorViewModel>()
+            .Succeeded(author);
+
+        _sender.Send(
+                Arg.Any<ChangeAuthorEmailCommand>(),
+                Arg.Any<CancellationToken>())
+            .Returns(operation);
+
+        // Act
+        var actionResult = await _controller.ChangeEmail(
+            authorId,
+            request,
+            CancellationToken.None);
+
+        // Assert
+        var okResult = actionResult.Should()
+            .BeOfType<OkObjectResult>()
+            .Subject;
+
+        okResult.StatusCode.Should().Be(200);
+
+        var response = okResult.Value.Should()
+            .BeOfType<ApiResponse<AuthorViewModel>>()
+            .Subject;
+
+        response.IsSuccess.Should().BeTrue();
+
+        response.Data.Should().BeSameAs(author);
+
+        response.Links.Should().NotBeEmpty();
+
+        await _sender.Received(1).Send(
+            Arg.Is<ChangeAuthorEmailCommand>(command =>
+                command.Id == authorId &&
+                command.Email == request.Email),
+            CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Change_Email_Fails()
+    {
+        // Arrange
+        const long authorId = 10;
+
+        var request = new ChangeAuthorEmailRequest
+        {
+            Email = "updated@test.com"
+        };
+
+        var operation = new OperationResult<AuthorViewModel>()
+            .Failed(
+                OperationErrorCode.Conflict,
+                "Query Fails");
+
+        _sender.Send(
+                Arg.Any<ChangeAuthorEmailCommand>(),
+                Arg.Any<CancellationToken>())
+            .Returns(operation);
+
+        // Act
+        var actionResult = await _controller.ChangeEmail(
+            authorId,
+            request,
+            CancellationToken.None);
+
+        // Assert
+        var objectResult = actionResult.Should()
+            .BeOfType<ObjectResult>()
+            .Subject;
+
+        objectResult.StatusCode.Should().Be(409);
+
+        var response = objectResult.Value.Should()
+            .BeOfType<ApiResponse<AuthorViewModel>>()
+            .Subject;
+
+        response.IsSuccess.Should().BeFalse();
+
+        response.Data.Should().BeNull();
+
+        _urlHelper.DidNotReceive()
+            .Link(Arg.Any<string>(), Arg.Any<object?>());
+
+        await _sender.Received(1).Send(
+            Arg.Is<ChangeAuthorEmailCommand>(command =>
+                command.Id == authorId &&
+                command.Email == request.Email),
+            CancellationToken.None);
+    }
+
+    private static AuthorViewModel CreateAuthor(long id)
+    {
+        return new AuthorViewModel
+        {
+            Id = id,
+            FirstName = "Mehdi",
+            LastName = "Nemati",
+            Email = "updated@test.com",
+            PhoneNumber = $"0912000000{id}"
+        };
+    }
+}

@@ -1,7 +1,6 @@
 ﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Category.Queries;
-using NewsAgency.Application.Contracts.Category.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 
@@ -32,12 +31,38 @@ public class GetCategoryByIdQueryHandler : IQueryHandler<GetCategoryByIdQuery, O
             return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
         }
 
+        var parentIsRemoved = false;
+
+        if (category.ParentId.HasValue)
+        {
+            var parent = await _queryRepository.GetByAsync(
+                category.ParentId.Value,
+                cancellationToken);
+
+            if (parent is null)
+            {
+                return operation.Failed(
+                    OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
+            }
+
+            parentIsRemoved = parent.IsRemoved;
+        }
+
+        var hasActiveChildren = await _queryRepository.HasActiveChildrenAsync(
+            category.Id,
+            cancellationToken);
+
         return operation.Succeeded(new CategoryViewModel
         {
             Id = category.Id,
             Title = category.Title.Value,
             IsRemoved = category.IsRemoved,
-            ParentId = category.ParentId
+            ParentId = category.ParentId,
+            Actions = new CategoryActionsViewModel
+            {
+            CanRemove = category.CanRemove(hasActiveChildren),
+            CanRestore = category.CanRestore(parentIsRemoved)
+        }
         });
 
     }

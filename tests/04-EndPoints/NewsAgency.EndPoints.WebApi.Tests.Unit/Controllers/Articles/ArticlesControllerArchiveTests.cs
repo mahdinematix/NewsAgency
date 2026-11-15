@@ -71,7 +71,6 @@ public class ArticlesControllerArchiveTests
 
         response.Links.Should().NotBeEmpty();
 
-        // Verify MediatR interaction
         await _sender.Received(1).Send(
             Arg.Is<ArchiveArticleCommand>(
                 command => command.Id == articleId),
@@ -87,7 +86,7 @@ public class ArticlesControllerArchiveTests
         var operation = new OperationResult<ArticleViewModel>()
             .Failed(
                 OperationErrorCode.LogicError,
-                "Article cannot be archived from its current status.");
+                "Archive Fails.");
 
         _sender.Send(
             Arg.Any<ArchiveArticleCommand>(),
@@ -114,7 +113,7 @@ public class ArticlesControllerArchiveTests
         response.Data.Should().BeNull();
 
         _urlHelper.DidNotReceive()
-            .Link(Arg.Any<string>(), Arg.Any<object?>());
+            .Link(Arg.Any<string>(), Arg.Any<object>());
 
         await _sender.Received(1).Send(
             Arg.Is<ArchiveArticleCommand>(

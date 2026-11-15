@@ -31,12 +31,38 @@ public class GetCategoryByTitleQueryHandler : IQueryHandler<GetCategoryByTitleQu
             return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
         }
 
+        var parentIsRemoved = false;
+
+        if (category.ParentId.HasValue)
+        {
+            var parent = await _queryRepository.GetByAsync(
+                category.ParentId.Value,
+                cancellationToken);
+
+            if (parent is null)
+            {
+                return operation.Failed(
+                    OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
+            }
+
+            parentIsRemoved = parent.IsRemoved;
+        }
+
+        var hasActiveChildren = await _queryRepository.HasActiveChildrenAsync(
+            category.Id,
+            cancellationToken);
+
         return operation.Succeeded(new CategoryViewModel
         {
             Title = category.Title.Value,
             ParentId = category.ParentId,
             Id = category.Id,
-            IsRemoved = category.IsRemoved
+            IsRemoved = category.IsRemoved,
+            Actions = new CategoryActionsViewModel
+            {
+                CanRemove = category.CanRemove(hasActiveChildren),
+                CanRestore = category.CanRestore(parentIsRemoved)
+            }
         });
     }
 }

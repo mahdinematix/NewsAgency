@@ -1,13 +1,15 @@
 ﻿using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Author.Commands;
+using NewsAgency.Application.Contracts.Author.Common;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.AuthorServices.CommandHandlers.ChangeFirstName;
 
-public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorFirstNameCommand, OperationResult>
+public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorFirstNameCommand, OperationResult<AuthorViewModel>>
 {
     private readonly IAuthorCommandRepository _commandRepository;
     private readonly IAuthorQueryRepository _queryRepository;
@@ -18,9 +20,9 @@ public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorF
         _queryRepository = queryRepository;
     }
 
-    public async Task<OperationResult> Handle(ChangeAuthorFirstNameCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<AuthorViewModel>> Handle(ChangeAuthorFirstNameCommand request, CancellationToken cancellationToken)
     {
-        var operation = new OperationResult();
+        var operation = new OperationResult<AuthorViewModel>();
         if (request is null)
         {
             return operation.Failed(OperationErrorCode.Validation, ApplicationMessages.ValueMustNotBeNull);
@@ -47,7 +49,15 @@ public class ChangeAuthorFirstNameCommandHandler : ICommandHandler<ChangeAuthorF
 
             author.ChangeFirstName(newFirstName);
             await _commandRepository.SaveChangesAsync(cancellationToken);
-            return operation.Succeeded();
+            return operation.Succeeded(new AuthorViewModel
+            {
+                Id = author.Id,
+                FirstName = author.FirstName.Value,
+                LastName = author.LastName.Value,
+                PhoneNumber = author.PhoneNumber.Value,
+                Email = author.Email.Value,
+                CreationDate = author.CreationDate.ToFarsi()
+            });
         }
         catch (InvalidValueObjectStateException ex)
         {

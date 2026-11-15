@@ -3,6 +3,7 @@ using NewsAgency.Application.Contracts.Author.Common;
 using NewsAgency.Application.Contracts.Author.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.AuthorAgg.Repositories;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.AuthorServices.QueryHandlers.GetByPhoneNumber;
 
@@ -37,7 +38,8 @@ public class GetAuthorByPhoneNumberQueryHandler : IQueryHandler<GetAuthorByPhone
             Email = author.Email.Value,
             LastName = author.LastName.Value,
             Id = author.Id,
-            PhoneNumber = author.PhoneNumber.Value
+            PhoneNumber = author.PhoneNumber.Value,
+            CreationDate = author.CreationDate.ToFarsi()
         });
     }
 }

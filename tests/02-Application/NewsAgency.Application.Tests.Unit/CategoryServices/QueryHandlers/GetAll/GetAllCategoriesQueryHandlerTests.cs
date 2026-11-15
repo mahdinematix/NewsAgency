@@ -81,4 +81,165 @@ public class GetAllCategoriesQueryHandlerTests
         result.Data.Should().BeNull();
         _queryRepository.Received(1).GetAllAsync(Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task Should_Return_Failed_Result_When_Parent_Does_Not_Exist()
+    {
+        // Arrange
+        const long parentId = 100;
+
+        var child = new Category(_builder.Build().Title, parentId);
+
+        var categories = new List<Category>
+        {
+            child
+        };
+
+        _queryRepository
+            .GetAllAsync(Arg.Any<CancellationToken>())
+            .Returns(categories);
+
+        _queryRepository
+            .GetByAsync(parentId, Arg.Any<CancellationToken>())
+            .ReturnsNull();
+
+        // Act
+        var result = await _queryHandler.Handle(
+            new GetAllCategoriesQuery(),
+            CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
+        result.Data.Should().BeNull();
+
+        await _queryRepository.Received(1).GetByAsync(
+            parentId,
+            Arg.Any<CancellationToken>());
+
+        await _queryRepository
+            .DidNotReceive()
+            .HasActiveChildrenAsync(
+                Arg.Any<long>(),
+                Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public async Task Should_Set_CanRestore_Based_On_Parent_Removed_State(
+        bool parentIsRemoved,
+        bool expectedCanRestore)
+    {
+        // Arrange
+        const long parentId = 100;
+
+        var child = new Category(_builder.Build().Title, parentId);
+        child.Remove(hasActiveChildren: false);
+
+        var parent = _builder.Build();
+
+        if (parentIsRemoved)
+        {
+            parent.Remove(hasActiveChildren: false);
+        }
+
+        _queryRepository
+            .GetAllAsync(Arg.Any<CancellationToken>())
+            .Returns(new List<Category> { child });
+
+        _queryRepository
+            .GetByAsync(parentId, Arg.Any<CancellationToken>())
+            .Returns(parent);
+
+        _queryRepository
+            .HasActiveChildrenAsync(
+                child.Id,
+                Arg.Any<CancellationToken>())
+            .Returns(false);
+
+        // Act
+        var result = await _queryHandler.Handle(
+            new GetAllCategoriesQuery(),
+            CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().ContainSingle();
+
+        result.Data[0].Actions.CanRestore.Should()
+            .Be(expectedCanRestore);
+
+        await _queryRepository.Received(1).GetByAsync(
+            parentId,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Should_Calculate_CanRestore_Independently_For_Each_Category()
+    {
+        // Arrange
+        const long firstParentId = 100;
+        const long secondParentId = 200;
+
+        var firstChild = new Category(
+            _builder.Build().Title,
+            firstParentId);
+
+        var secondChild = new Category(
+            _builder.Build().Title,
+            secondParentId);
+
+        firstChild.Remove(hasActiveChildren: false);
+        secondChild.Remove(hasActiveChildren: false);
+
+        var firstParent = _builder.Build();
+
+        var secondParent = _builder.Build();
+        secondParent.Remove(hasActiveChildren: false);
+
+        var categories = new List<Category>
+        {
+            firstChild,
+            secondChild
+        };
+
+        _queryRepository
+            .GetAllAsync(Arg.Any<CancellationToken>())
+            .Returns(categories);
+
+        _queryRepository
+            .GetByAsync(firstParentId, Arg.Any<CancellationToken>())
+            .Returns(firstParent);
+
+        _queryRepository
+            .GetByAsync(secondParentId, Arg.Any<CancellationToken>())
+            .Returns(secondParent);
+
+        _queryRepository
+            .HasActiveChildrenAsync(
+                Arg.Any<long>(),
+                Arg.Any<CancellationToken>())
+            .Returns(false);
+
+        // Act
+        var result = await _queryHandler.Handle(
+            new GetAllCategoriesQuery(),
+            CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().HaveCount(2);
+
+        result.Data[0].Actions.CanRestore.Should().BeTrue();
+        result.Data[1].Actions.CanRestore.Should().BeFalse();
+
+        await _queryRepository.Received(1).GetByAsync(
+            firstParentId,
+            Arg.Any<CancellationToken>());
+
+        await _queryRepository.Received(1).GetByAsync(
+            secondParentId,
+            Arg.Any<CancellationToken>());
+    }
 }

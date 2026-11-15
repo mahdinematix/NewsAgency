@@ -1,11 +1,14 @@
-﻿using System.Linq.Expressions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NewsAgency.Application.CategoryServices.CommandHandlers.Create;
+using NewsAgency.Application.Common;
 using NewsAgency.Application.Contracts.Category.Commands;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
+using NewsAgency.Domain.CategoryAgg.ValueObjects;
 using NSubstitute;
+using System.Linq.Expressions;
+using NSubstitute.ReturnsExtensions;
 
 namespace NewsAgency.Application.Tests.Unit.CategoryServices.CommandHandlers.Create;
 
@@ -26,8 +29,11 @@ public class CreateCategoryCommandHandlerTests
     public async Task Should_Create_And_Return_Success_Result_When_Command_Is_Valid()
     {
         //arrange
-
         var command = SomeCreateCategoryCommand();
+        var parent = new Category(new CategoryTitle("Parent Category"));
+        _queryRepository
+            .GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(parent);
 
         //act
         var result = await _commandHandler.Handle(command, CancellationToken.None);
@@ -64,6 +70,10 @@ public class CreateCategoryCommandHandlerTests
     {
         // arrange
         var command = SomeCreateCategoryCommand();
+        var parent = new Category(new CategoryTitle("Parent Category"));
+        _queryRepository
+            .GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(parent);
 
         // act
         await _commandHandler.Handle(command, CancellationToken.None);
@@ -127,6 +137,10 @@ public class CreateCategoryCommandHandlerTests
             .Returns(
                 Task.FromResult(false),
                 Task.FromResult(true));
+        var parent = new Category(new CategoryTitle("Parent Category"));
+        _queryRepository
+            .GetByAsync(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(parent);
 
         //act
         var result1 = await _commandHandler.Handle(command1, CancellationToken.None);
@@ -144,6 +158,48 @@ public class CreateCategoryCommandHandlerTests
                 Arg.Any<Expression<Func<Category, bool>>>(),
                 Arg.Any<CancellationToken>());
 
+    }
+
+    [Fact]
+    public async Task Should_Return_NotFound_Result_When_Parent_Category_Does_Not_Exist()
+    {
+        // Arrange
+        const long parentId = 100;
+
+        var command = new CreateCategoryCommand(
+            "Test Category",
+            parentId);
+
+        _queryRepository
+            .GetByAsync(
+                parentId,
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
+
+        // Act
+        var result = await _commandHandler.Handle(
+            command,
+            CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+
+        result.ErrorCode.Should().Be(OperationErrorCode.NotFound);
+
+        result.Data.Should().BeNull();
+
+        await _queryRepository.Received(1).GetByAsync(
+            Arg.Any<long>(),
+            CancellationToken.None);
+
+        await _commandRepository.DidNotReceive()
+            .CreateAsync(
+                Arg.Any<Category>(),
+                Arg.Any<CancellationToken>());
+
+        await _commandRepository.DidNotReceive()
+            .SaveChangesAsync(
+                Arg.Any<CancellationToken>());
     }
 
     private static CreateCategoryCommand SomeCreateCategoryCommand()

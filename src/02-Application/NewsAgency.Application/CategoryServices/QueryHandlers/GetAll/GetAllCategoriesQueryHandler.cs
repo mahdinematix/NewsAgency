@@ -2,6 +2,7 @@
 using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Category.Queries;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 
 namespace NewsAgency.Application.CategoryServices.QueryHandlers.GetAll;
@@ -26,12 +27,46 @@ public class GetAllCategoriesQueryHandler : IQueryHandler<GetAllCategoriesQuery,
             return operation.Failed(OperationErrorCode.NotFound, ApplicationMessages.RecordNotFound);
         }
 
-        return operation.Succeeded(categories.Select(x=> new CategoryViewModel{
-            Id = x.Id,
-            Title = x.Title.Value,
-            ParentId = x.ParentId,
-            IsRemoved = x.IsRemoved
+        var categoryViewModels = new List<CategoryViewModel>();
 
-        }).ToList());
+        foreach (var category in categories)
+        {
+            var parentIsRemoved = false;
+
+            if (category.ParentId.HasValue)
+            {
+                var parent = await _queryRepository.GetByAsync(
+                    category.ParentId.Value,
+                    cancellationToken);
+
+                if (parent is null)
+                {
+                    return operation.Failed(
+                        OperationErrorCode.NotFound,
+                        ApplicationMessages.RecordNotFound);
+                }
+
+                parentIsRemoved = parent.IsRemoved;
+            }
+
+            var hasActiveChildren = await _queryRepository.HasActiveChildrenAsync(
+                category.Id,
+                cancellationToken);
+
+            categoryViewModels.Add(new CategoryViewModel
+            {
+                Id = category.Id,
+                Title = category.Title.Value,
+                ParentId = category.ParentId,
+                IsRemoved = category.IsRemoved,
+                Actions = new CategoryActionsViewModel
+                {
+                    CanRemove = category.CanRemove(hasActiveChildren),
+                    CanRestore = category.CanRestore(parentIsRemoved)
+                }
+            });
+        }
+
+        return operation.Succeeded(categoryViewModels);
     }
 }
