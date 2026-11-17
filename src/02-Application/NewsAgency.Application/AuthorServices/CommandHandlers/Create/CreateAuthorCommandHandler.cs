@@ -2,6 +2,7 @@
 using NewsAgency.Application.Contracts.Author.Commands;
 using NewsAgency.Application.Contracts.Author.Common;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Application.Exceptions;
 using NewsAgency.Domain.AuthorAgg.Entities;
 using NewsAgency.Domain.AuthorAgg.Repositories;
 using NewsAgency.Domain.AuthorAgg.ValueObjects;
