@@ -22,6 +22,10 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
     {
         if (exception is not ValidationException validationException)
         {
+            _logger.LogError(
+                exception,
+                "An unexpected exception occurred while processing the request.");
+
             return false;
         }
 

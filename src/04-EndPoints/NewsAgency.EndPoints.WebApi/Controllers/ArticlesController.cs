@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NewsAgency.Application.Contracts.Article.Commands;
-using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.EndPoints.WebApi.Extensions;
 using NewsAgency.EndPoints.WebApi.HATEOAS;
@@ -31,29 +30,7 @@ public class ArticlesController : ControllerBase
             new GetAllArticlesQuery(),
             cancellationToken);
 
-        if (!result.IsSuccess)
-        {
-            return this.ToActionResult(result);
-        }
-
-        var articles = result.Data
-            .Select(article => new ApiResource<ArticleViewModel>
-            {
-                Data = article,
-                Links = ArticleLinks.ForDetails(Url, article)
-            })
-            .ToList();
-
-        var response = new ApiResponse<List<ApiResource<ArticleViewModel>>>
-        {
-            Data = articles,
-            IsSuccess = result.IsSuccess,
-            Message = result.Message,
-            ErrorCode = result.ErrorCode,
-            Links = ArticleLinks.ForCollection(Url)
-        };
-
-        return Ok(response);
+        return this.ToArticleCollectionResult(result);
     }
 
 

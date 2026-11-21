@@ -56,6 +56,30 @@ public class CategoriesController : ControllerBase
         return this.ToCategoryResult(result);
     }
 
+    [HttpGet("{id:long}/parent", Name = ApiRouteNames.Categories.GetParentByChildId)]
+    public async Task<IActionResult> GetParentByChildId(
+        long id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _sender.Send(
+            new GetCategoryParentByChildIdQuery(id),
+            cancellationToken);
+
+        return this.ToCategoryParentResult(result, id);
+    }
+
+    [HttpGet("{id:long}/children", Name = ApiRouteNames.Categories.GetChildrenByParentId)]
+    public async Task<IActionResult> GetChildrenByParentId(
+        long id,
+        CancellationToken cancellationToken)
+    {
+        var result = await _sender.Send(
+            new GetCategoryChildrenByParentIdQuery(id),
+            cancellationToken);
+
+        return this.ToCategoryCollectionResult(result);
+    }
+
     [HttpPost(Name = ApiRouteNames.Categories.Create)]
     public async Task<IActionResult> Create(
         CreateCategoryCommand command,
@@ -138,32 +162,6 @@ public class CategoriesController : ControllerBase
 
         return this.ToCategoryResult(result);
     }
-
-    [HttpGet("{id:long}/parent", Name = ApiRouteNames.Categories.GetParentByChildId)]
-    public async Task<IActionResult> GetParentByChildId(
-        long id,
-        CancellationToken cancellationToken)
-    {
-        var result = await _sender.Send(
-            new GetCategoryParentByChildIdQuery(id),
-            cancellationToken);
-
-        return this.ToCategoryParentResult(result, id);
-    }
-
-    [HttpGet("{id:long}/children", Name = ApiRouteNames.Categories.GetChildrenByParentId)]
-    public async Task<IActionResult> GetChildrenByParentId(
-        long id,
-        CancellationToken cancellationToken)
-    {
-        var result = await _sender.Send(
-            new GetCategoryChildrenByParentIdQuery(id),
-            cancellationToken);
-
-        return this.ToCategoryCollectionResult(result);
-    }
-
-
 }
 
 
