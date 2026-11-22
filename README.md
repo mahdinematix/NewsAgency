@@ -2,6 +2,8 @@
 
 A .NET 10 ASP.NET Core Web API for managing news content, authors, and hierarchical categories. The project is built around Clean Architecture principles, domain-focused business rules, CQRS with MediatR, and automated testing.
 
+To see ScreenShots: https://my.files.ir/drive/s/bJB3rJQgtFt5QCAm4tUsSUtJLo8o0f
+
 The project is developed with a TDD-oriented workflow. Its main goal is to practice building a maintainable backend application in which business rules, use cases, persistence, and HTTP concerns have clearly separated responsibilities.
 
 ## Project Overview
