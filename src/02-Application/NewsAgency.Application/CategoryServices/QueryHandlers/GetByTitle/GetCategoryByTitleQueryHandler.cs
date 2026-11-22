@@ -3,6 +3,7 @@ using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Category.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.CategoryAgg.Repositories;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.QueryHandlers.GetByTitle;
 
@@ -58,6 +59,7 @@ public class GetCategoryByTitleQueryHandler : IQueryHandler<GetCategoryByTitleQu
             ParentId = category.ParentId,
             Id = category.Id,
             IsRemoved = category.IsRemoved,
+            CreationDate = category.CreationDate.ToFarsi(),
             Actions = new CategoryActionsViewModel
             {
                 CanRemove = category.CanRemove(hasActiveChildren),

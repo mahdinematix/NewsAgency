@@ -3,6 +3,7 @@ using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
+using NewsAgency.Utilities;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.QueryHandlers.GetById;
@@ -40,6 +41,7 @@ public class GetArticleByIdQueryHandler : IQueryHandler<GetArticleByIdQuery, Ope
             AuthorId = article.AuthorId,
             CategoryId = article.CategoryId,
             Status = article.Status.GetEnumDescription(),
+            CreationDate = article.CreationDate.ToFarsi(),
             Actions = new ArticleActionsViewModel
             {
                 CanEdit = article.CanEdit,

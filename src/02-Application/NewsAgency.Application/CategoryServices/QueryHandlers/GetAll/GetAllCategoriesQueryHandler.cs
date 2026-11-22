@@ -2,8 +2,10 @@
 using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Category.Queries;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.QueryHandlers.GetAll;
 
@@ -59,6 +61,7 @@ public class GetAllCategoriesQueryHandler : IQueryHandler<GetAllCategoriesQuery,
                 Title = category.Title.Value,
                 ParentId = category.ParentId,
                 IsRemoved = category.IsRemoved,
+                CreationDate = category.CreationDate.ToFarsi(),
                 Actions = new CategoryActionsViewModel
                 {
                     CanRemove = category.CanRemove(hasActiveChildren),

@@ -5,6 +5,7 @@ using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Edit;
@@ -57,6 +58,7 @@ public class EditArticleCommandHandler : ICommandHandler<EditArticleCommand , Op
                 AuthorId = article.AuthorId,
                 CategoryId = article.CategoryId,
                 Status = article.Status.GetEnumDescription(),
+                CreationDate = article.CreationDate.ToFarsi(),
                 Actions = new ArticleActionsViewModel
                 {
                     CanMoveToDraft = article.CanMoveToDraft,

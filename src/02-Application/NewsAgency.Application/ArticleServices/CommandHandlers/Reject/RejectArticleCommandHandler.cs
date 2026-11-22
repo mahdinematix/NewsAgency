@@ -4,6 +4,7 @@ using NewsAgency.Application.Contracts.Article.Common;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Reject;
@@ -47,6 +48,7 @@ public class RejectArticleCommandHandler : ICommandHandler<RejectArticleCommand,
                 AuthorId = article.AuthorId,
                 CategoryId = article.CategoryId,
                 Status = article.Status.GetEnumDescription(),
+                CreationDate = article.CreationDate.ToFarsi(),
                 Actions = new ArticleActionsViewModel
                 {
                     CanMoveToDraft = article.CanMoveToDraft,

@@ -2,7 +2,9 @@
 using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Category.Queries;
 using NewsAgency.Application.Contracts.Common;
+using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.QueryHandlers.GetParentByChildId;
 
@@ -78,6 +80,7 @@ public class GetCategoryParentByChildIdQueryHandler
             Title = parent.Title.Value,
             IsRemoved = parent.IsRemoved,
             ParentId = parent.ParentId,
+            CreationDate = parent.CreationDate.ToFarsi(),
             Actions = new CategoryActionsViewModel
             {
                 CanRemove = parent.CanRemove(hasActiveChildren),

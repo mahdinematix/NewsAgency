@@ -7,6 +7,7 @@ using NewsAgency.Domain.CategoryAgg.Entities;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.CommandHandlers.Create;
 
@@ -65,6 +66,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
                 Title = category.Title.Value,
                 IsRemoved = category.IsRemoved,
                 ParentId = category.ParentId,
+                CreationDate = category.CreationDate.ToFarsi(),
                 Actions = new CategoryActionsViewModel
                 {
                     CanRemove = category.CanRemove(hasActiveChildren),

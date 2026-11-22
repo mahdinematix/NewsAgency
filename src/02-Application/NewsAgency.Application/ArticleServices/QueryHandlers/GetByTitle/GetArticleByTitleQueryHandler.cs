@@ -5,6 +5,7 @@ using NewsAgency.Application.Contracts.Article.Queries;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
+using NewsAgency.Utilities;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.QueryHandlers.GetByTitle;
@@ -43,6 +44,7 @@ public class GetArticleByTitleQueryHandler : IQueryHandler<GetArticleByTitleQuer
             AuthorId = article.AuthorId,
             CategoryId = article.CategoryId,
             Status = article.Status.GetEnumDescription(),
+            CreationDate = article.CreationDate.ToFarsi(),
             Actions = new ArticleActionsViewModel
             {
                 CanMoveToDraft = article.CanMoveToDraft,

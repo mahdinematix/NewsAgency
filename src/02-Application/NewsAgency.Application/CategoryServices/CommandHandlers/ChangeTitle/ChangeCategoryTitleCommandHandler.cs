@@ -6,6 +6,7 @@ using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.CategoryAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.CommandHandlers.ChangeTitle;
 
@@ -70,6 +71,7 @@ public class ChangeCategoryTitleCommandHandler : IRequestHandler<ChangeCategoryT
                 Title = category.Title.Value,
                 IsRemoved = category.IsRemoved,
                 ParentId = category.ParentId,
+                CreationDate = category.CreationDate.ToFarsi(),
                 Actions = new CategoryActionsViewModel
                 {
                     CanRemove = category.CanRemove(hasActiveChildren),

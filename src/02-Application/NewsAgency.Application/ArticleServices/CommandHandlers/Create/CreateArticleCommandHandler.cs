@@ -6,6 +6,7 @@ using NewsAgency.Domain.ArticleAgg.Entities;
 using NewsAgency.Domain.ArticleAgg.Repositories;
 using NewsAgency.Domain.ArticleAgg.ValueObjects;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 using NewsAgency.Utilities.Extensions;
 
 namespace NewsAgency.Application.ArticleServices.CommandHandlers.Create;
@@ -48,6 +49,7 @@ public class CreateArticleCommandHandler : ICommandHandler<CreateArticleCommand,
                 AuthorId = article.AuthorId,
                 CategoryId = article.CategoryId,
                 Status = article.Status.GetEnumDescription(),
+                CreationDate = article.CreationDate.ToFarsi(),
                 Actions = new ArticleActionsViewModel
                 {
                     CanMoveToDraft = article.CanMoveToDraft,

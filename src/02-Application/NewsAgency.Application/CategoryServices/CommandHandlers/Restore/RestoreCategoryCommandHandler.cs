@@ -5,6 +5,7 @@ using NewsAgency.Application.Contracts.Category.Common;
 using NewsAgency.Application.Contracts.Common;
 using NewsAgency.Domain.CategoryAgg.Repositories;
 using NewsAgency.Domain.Exceptions;
+using NewsAgency.Utilities;
 
 namespace NewsAgency.Application.CategoryServices.CommandHandlers.Restore;
 
@@ -70,6 +71,7 @@ public class RestoreCategoryCommandHandler : IRequestHandler<RestoreCategoryComm
                 Title = category.Title.Value,
                 IsRemoved = category.IsRemoved,
                 ParentId = category.ParentId,
+                CreationDate = category.CreationDate.ToFarsi(),
                 Actions = new CategoryActionsViewModel
                 {
                     CanRemove = category.CanRemove(hasActiveChildren),
